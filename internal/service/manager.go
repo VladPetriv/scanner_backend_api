@@ -22,5 +22,12 @@ func New(store *store.Store) (*Manager, error) {
 		return nil, ErrNoStore
 	}
 
-	return &Manager{}, nil
+	return &Manager{
+		Channel: NewChannelService(store),
+		Message: NewMessageService(store),
+		Replie:  NewReplieService(store),
+		User:    NewUserService(store),
+		WebUser: NewWebUserService(store),
+		Saved:   NewSavedService(store),
+	}, nil
 }
