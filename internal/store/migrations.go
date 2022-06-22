@@ -1,9 +1,10 @@
 package store
 
 import (
-	"github.com/VladPetriv/scanner_backend_api/pkg/config"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/pkg/errors"
+
+	"github.com/VladPetriv/scanner_backend_api/pkg/config"
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -11,12 +12,7 @@ import (
 
 var ErrNoDBURL = errors.New("no db url provided")
 
-func runMigrations() error {
-	cfg, err := config.Get()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
+func runMigrations(cfg *config.Config) error {
 	if cfg.DBURL == "" {
 		return ErrNoDBURL
 	}

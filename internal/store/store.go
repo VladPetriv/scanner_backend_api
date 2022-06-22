@@ -3,9 +3,11 @@ package store
 import (
 	"time"
 
-	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
-	"github.com/VladPetriv/scanner_backend_api/pkg/logger"
 	"go.uber.org/zap"
+
+	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
+	"github.com/VladPetriv/scanner_backend_api/pkg/config"
+	"github.com/VladPetriv/scanner_backend_api/pkg/logger"
 )
 
 const KeepAlivePollPeriod = 5
@@ -22,8 +24,8 @@ type Store struct {
 	Saved   SavedRepo
 }
 
-func New(log *logger.Logger) (*Store, error) {
-	db, err := pg.Dial()
+func New(cfg *config.Config, log *logger.Logger) (*Store, error) {
+	db, err := pg.Dial(cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +33,7 @@ func New(log *logger.Logger) (*Store, error) {
 	if db != nil {
 		log.Info("running migrations...")
 
-		err := runMigrations()
+		err := runMigrations(cfg)
 		if err != nil {
 			return nil, err
 		}
@@ -43,13 +45,20 @@ func New(log *logger.Logger) (*Store, error) {
 	if db != nil {
 		store.DB = db
 
-		go store.KeepAliveDB()
+		store.Channel = pg.NewChannelRepo(store.DB)
+		store.Message = pg.NewMessageRepo(store.DB)
+		store.Replie = pg.NewReplieRepo(store.DB)
+		store.User = pg.NewUserRepo(store.DB)
+		store.WebUser = pg.NewWebUserRepo(store.DB)
+		store.Saved = pg.NewSavedRepo(store.DB)
+
+		go store.KeepAliveDB(cfg)
 	}
 
 	return &store, nil
 }
 
-func (s *Store) KeepAliveDB() {
+func (s *Store) KeepAliveDB(cfg *config.Config) {
 	var err error
 
 	for {
@@ -68,7 +77,7 @@ func (s *Store) KeepAliveDB() {
 
 		s.log.Debug("[store.KeepAliveDB] Lost db connection. Restoring...")
 
-		s.DB, err = pg.Dial()
+		s.DB, err = pg.Dial(cfg)
 		if err != nil {
 			s.log.Error("failed to connect", zap.Error(err))
 

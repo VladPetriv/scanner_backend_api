@@ -1,10 +1,12 @@
 package pg
 
 import (
-	"github.com/VladPetriv/scanner_backend_api/pkg/config"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
+
+	"github.com/VladPetriv/scanner_backend_api/pkg/config"
+
+	_ "github.com/lib/pq"
 )
 
 var ErrNoDBURL = errors.New("no db url provided")
@@ -13,12 +15,7 @@ type DB struct {
 	*sqlx.DB
 }
 
-func Dial() (*DB, error) {
-	cfg, err := config.Get()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get config")
-	}
-
+func Dial(cfg *config.Config) (*DB, error) {
 	if cfg.DBURL == "" {
 		return nil, ErrNoDBURL
 	}
