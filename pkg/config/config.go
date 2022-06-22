@@ -11,6 +11,7 @@ type Config struct {
 	DBURL            string
 	DBMigrationsPath string
 	LogLevel         string
+	Port             string
 }
 
 func Get() (*Config, error) {
@@ -22,5 +23,6 @@ func Get() (*Config, error) {
 		DBURL:            os.Getenv("DATABASE_URL"),
 		DBMigrationsPath: os.Getenv("DB_MIGRATION_PATH"),
 		LogLevel:         os.Getenv("LOG_LEVEL"),
+		Port:             os.Getenv("PORT"),
 	}, nil
 }
