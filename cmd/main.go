@@ -32,7 +32,7 @@ func main() {
 
 	server := new(server.Server)
 
-	log.Info("start server")
+	log.Info("start server", zap.String("PORT", cfg.Port))
 
 	if err := server.Start(handler.InitRoutes()); err != nil {
 		log.Error("failed to start server", zap.Error(err))
