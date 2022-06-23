@@ -4,9 +4,10 @@ import (
 	"os"
 	"sync"
 
-	"github.com/VladPetriv/scanner_backend_api/pkg/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/VladPetriv/scanner_backend_api/pkg/config"
 )
 
 type Logger struct {

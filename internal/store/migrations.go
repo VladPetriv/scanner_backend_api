@@ -1,8 +1,10 @@
 package store
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/pkg/errors"
 
 	"github.com/VladPetriv/scanner_backend_api/pkg/config"
 
@@ -22,11 +24,11 @@ func runMigrations(cfg *config.Config) error {
 		cfg.DBURL,
 	)
 	if err != nil {
-		return errors.Wrap(err, "failed to create migrations")
+		return fmt.Errorf("failed to create migrations: %w", err)
 	}
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		return errors.Wrap(err, "failed to run migrations")
+		return fmt.Errorf("failed to run migrations: %w", err)
 	}
 
 	return nil

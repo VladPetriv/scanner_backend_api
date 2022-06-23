@@ -1,10 +1,10 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/pkg/errors"
 )
 
 type Config struct {
@@ -16,7 +16,7 @@ type Config struct {
 
 func Get() (*Config, error) {
 	if err := godotenv.Load("configs/.config.env"); err != nil {
-		return nil, errors.Wrap(err, "failed to get .env file")
+		return nil, fmt.Errorf("failed to get .env file: %w", err)
 	}
 
 	return &Config{

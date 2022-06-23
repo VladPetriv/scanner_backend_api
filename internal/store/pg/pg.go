@@ -1,8 +1,10 @@
 package pg
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
 
 	"github.com/VladPetriv/scanner_backend_api/pkg/config"
 
@@ -22,12 +24,12 @@ func Dial(cfg *config.Config) (*DB, error) {
 
 	db, err := sqlx.Open("postgres", cfg.DBURL)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to connect")
+		return nil, fmt.Errorf("failed to connect: %w", err)
 	}
 
 	_, err = db.Exec("SELECT 1;")
 	if err != nil {
-		return nil, errors.Wrap(err, "db is not accessible")
+		return nil, fmt.Errorf("db is not accessible: %w", err)
 	}
 
 	return &DB{db}, nil
