@@ -8,6 +8,14 @@ build:
 run:
 	go run ./cmd/main.go
 
+.PHONY: test
+test:
+	go test -v ./...
+
+.PHONY: lint
+lint:
+	~/go/bin/golangci-lint run --enable-all --skip-dirs mocks
+
 .PHONY: migrate_up
 migrate_up:
 	migrate -path ./internal/store/migrations -database $(DB_URL) -verbose up
@@ -15,3 +23,5 @@ migrate_up:
 .PHONY: migrate_down
 migrate_down:
 	migrate -path ./internal/store/migrations -database $(DB_URL) -verbose down
+
+
