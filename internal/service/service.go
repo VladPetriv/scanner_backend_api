@@ -1,7 +1,13 @@
 package service
 
+import "github.com/VladPetriv/scanner_backend_api/internal/model"
+
 //go:generate mockery --dir . --name ChannelService --output ./mocks
-type ChannelService interface{}
+type ChannelService interface {
+	GetChannelsCount() (int, error)
+	GetChannelsByPage(page int) ([]model.Channel, error)
+	GetChannelByName(name string) (*model.Channel, error)
+}
 
 //go:generate mockery --dir . --name MessageService --output ./mocks
 type MessageService interface{}
