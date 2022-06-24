@@ -1,13 +1,14 @@
 package main
 
 import (
+	"go.uber.org/zap"
+
 	"github.com/VladPetriv/scanner_backend_api/internal/handler"
 	"github.com/VladPetriv/scanner_backend_api/internal/server"
 	"github.com/VladPetriv/scanner_backend_api/internal/service"
 	"github.com/VladPetriv/scanner_backend_api/internal/store"
 	"github.com/VladPetriv/scanner_backend_api/pkg/config"
 	"github.com/VladPetriv/scanner_backend_api/pkg/logger"
-	"go.uber.org/zap"
 )
 
 func main() {
