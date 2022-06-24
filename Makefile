@@ -12,6 +12,11 @@ run:
 test:
 	go test -v ./...
 
+.PHONY: mock
+mock:
+	cd ./internal/store/; go generate;
+	cd ./internal/service/; go generate;
+
 .PHONY: migrate_up
 migrate_up:
 	migrate -path ./internal/store/migrations -database $(DB_URL) -verbose up
