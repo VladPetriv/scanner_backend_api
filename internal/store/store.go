@@ -13,7 +13,7 @@ import (
 const KeepAlivePollPeriod = 5
 
 type Store struct {
-	DB  *pg.DB
+	db  *pg.DB
 	log *logger.Logger
 
 	Channel ChannelRepo
@@ -43,31 +43,31 @@ func New(cfg *config.Config, log *logger.Logger) (*Store, error) {
 	store.log = log
 
 	if db != nil {
-		store.DB = db
+		store.db = db
 
-		store.Channel = pg.NewChannelRepo(store.DB)
-		store.Message = pg.NewMessageRepo(store.DB)
-		store.Replie = pg.NewReplieRepo(store.DB)
-		store.User = pg.NewUserRepo(store.DB)
-		store.WebUser = pg.NewWebUserRepo(store.DB)
-		store.Saved = pg.NewSavedRepo(store.DB)
+		store.Channel = pg.NewChannelRepo(store.db)
+		store.Message = pg.NewMessageRepo(store.db)
+		store.Replie = pg.NewReplieRepo(store.db)
+		store.User = pg.NewUserRepo(store.db)
+		store.WebUser = pg.NewWebUserRepo(store.db)
+		store.Saved = pg.NewSavedRepo(store.db)
 
-		go store.KeepAliveDB(cfg)
+		go store.keepAliveDB(cfg)
 	}
 
 	return &store, nil
 }
 
-func (s *Store) KeepAliveDB(cfg *config.Config) {
+func (s *Store) keepAliveDB(cfg *config.Config) {
 	var err error
 
 	for {
 		time.Sleep(time.Second * KeepAlivePollPeriod)
 
 		lostConnection := false
-		if s.DB == nil {
+		if s.db == nil {
 			lostConnection = true
-		} else if _, err := s.DB.Exec("SELECT 1;"); err != nil {
+		} else if _, err := s.db.Exec("SELECT 1;"); err != nil {
 			lostConnection = true
 		}
 
@@ -77,7 +77,7 @@ func (s *Store) KeepAliveDB(cfg *config.Config) {
 
 		s.log.Debug("[store.KeepAliveDB] Lost db connection. Restoring...")
 
-		s.DB, err = pg.Dial(cfg)
+		s.db, err = pg.Dial(cfg)
 		if err != nil {
 			s.log.Error("failed to connect", zap.Error(err))
 
