@@ -95,7 +95,7 @@ func (m *MessageRepo) GetFullMessagesByChannelIDAndPage(ID int, offset int) ([]m
 	return messages, nil
 }
 
-func (m *MessageRepo) GetFullMessagesByUserIDAndPage(ID int, offset int) ([]model.FullMessage, error) {
+func (m *MessageRepo) GetFullMessagesByUserID(ID int) ([]model.FullMessage, error) {
 	messages := make([]model.FullMessage, 0, 10)
 
 	err := m.db.Select(
@@ -108,13 +108,11 @@ func (m *MessageRepo) GetFullMessagesByUserIDAndPage(ID int, offset int) ([]mode
 		FROM message m
 		LEFT JOIN channel c ON c.id = m.channel_id 
 		LEFT JOIN tg_user u ON m.user_id = u.id 
-		WHERE m.user_id = $1
-		ORDER BY m.id DESC NULLS LAST OFFSET $2 LIMIT 10;`,
+		WHERE m.user_id = $1;`,
 		ID,
-		offset,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get full messages by user ID and page: %w", err)
+		return nil, fmt.Errorf("failed to get full messages by user ID: %w", err)
 	}
 
 	if len(messages) == 0 {
@@ -123,6 +121,7 @@ func (m *MessageRepo) GetFullMessagesByUserIDAndPage(ID int, offset int) ([]mode
 
 	return messages, nil
 }
+
 func (m *MessageRepo) GetFullMessageByID(ID int) (*model.FullMessage, error) {
 	var message model.FullMessage
 
@@ -136,7 +135,7 @@ func (m *MessageRepo) GetFullMessageByID(ID int) (*model.FullMessage, error) {
 		FROM message m
 		LEFT JOIN channel c ON c.id = m.channel_id 
 		LEFT JOIN tg_user u ON m.user_id = u.id 
-		WHERE m.id = $1`,
+		WHERE m.id = $1;`,
 		ID,
 	)
 	if err != nil {

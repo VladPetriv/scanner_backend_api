@@ -16,7 +16,7 @@ type MessageRepo interface {
 	GetFullMessageByID(ID int) (*model.FullMessage, error)
 	GetFullMessagesByPage(offset int) ([]model.FullMessage, error)
 	GetFullMessagesByChannelIDAndPage(ID, offset int) ([]model.FullMessage, error)
-	GetFullMessagesByUserIDAndPage(ID, offset int) ([]model.FullMessage, error)
+	GetFullMessagesByUserID(ID int) ([]model.FullMessage, error)
 }
 
 //go:generate mockery --dir . --name UserRepo --output ./mocks
