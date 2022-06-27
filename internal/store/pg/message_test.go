@@ -199,7 +199,7 @@ func Test_GetFullMessageByID(t *testing.T) {
 					FROM message m
 					LEFT JOIN channel c ON c.id = m.channel_id 
 					LEFT JOIN tg_user u ON m.user_id = u.id 
-					WHERE m.id = $1`,
+					WHERE m.id = $1;`,
 				).
 					WithArgs(1).WillReturnRows(rows)
 			},
@@ -220,7 +220,7 @@ func Test_GetFullMessageByID(t *testing.T) {
 					FROM message m
 					LEFT JOIN channel c ON c.id = m.channel_id 
 					LEFT JOIN tg_user u ON m.user_id = u.id 
-					WHERE m.id = $1`,
+					WHERE m.id = $1;`,
 				).
 					WithArgs(1).WillReturnRows(rows)
 			},
@@ -240,7 +240,7 @@ func Test_GetFullMessageByID(t *testing.T) {
 					FROM message m
 					LEFT JOIN channel c ON c.id = m.channel_id 
 					LEFT JOIN tg_user u ON m.user_id = u.id 
-					WHERE m.id = $1`,
+					WHERE m.id = $1;`,
 				).
 					WithArgs(1).WillReturnError(fmt.Errorf("some error"))
 			},
@@ -581,7 +581,7 @@ func Test_GetFullMessagesByChannelIDAndPage(t *testing.T) {
 	}
 }
 
-func Test_GetFullMessagesByUserIDAndPage(t *testing.T) {
+func Test_GetFullMessagesByUserID(t *testing.T) {
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -614,7 +614,7 @@ func Test_GetFullMessagesByUserIDAndPage(t *testing.T) {
 		expectedErrMsg string
 	}{
 		{
-			name: "Ok: [full messages by user ID with offset 0 found]",
+			name: "Ok: [full messages by user ID found]",
 			mock: func() {
 				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"}).
 					AddRow(1, "test1", "test1.tg", "test1.jpg", "test1c", "test1c testc", "test1c.jpg", 1, "testu testu", "testu.jpg", 0).
@@ -637,29 +637,27 @@ func Test_GetFullMessagesByUserIDAndPage(t *testing.T) {
 					FROM message m
 					LEFT JOIN channel c ON c.id = m.channel_id 
 					LEFT JOIN tg_user u ON m.user_id = u.id 
-					WHERE m.user_id = $1
-					ORDER BY m.id DESC NULLS LAST OFFSET $2 LIMIT 10;`,
+					WHERE m.user_id = $1;`,
 				).
-					WithArgs(1, 0).WillReturnRows(rows)
+					WithArgs(1).WillReturnRows(rows)
 			},
-			ID:     1,
-			offset: 0,
-			want:   data[:10],
+			ID:   1,
+			want: data[:10],
 		},
 		{
-			name: "Ok: [full messages by user ID found with offset 10]",
+			name: "Ok: [full messages by user ID found]",
 			mock: func() {
 				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"}).
-					AddRow(11, "test11", "test11.tg", "test11.jpg", "test11c", "test11c testc", "test11c.jpg", 1, "testu testu", "testu.jpg", 0).
-					AddRow(12, "test12", "test12.tg", "test12.jpg", "test12c", "test12c testc", "test12c.jpg", 1, "testu testu", "testu.jpg", 0).
-					AddRow(13, "test13", "test13.tg", "test13.jpg", "test13c", "test13c testc", "test13c.jpg", 1, "testu testu", "testu.jpg", 0).
-					AddRow(14, "test14", "test14.tg", "test14.jpg", "test14c", "test14c testc", "test14c.jpg", 1, "testu testu", "testu.jpg", 0).
-					AddRow(15, "test15", "test15.tg", "test15.jpg", "test15c", "test15c testc", "test15c.jpg", 1, "testu testu", "testu.jpg", 0).
-					AddRow(16, "test16", "test16.tg", "test16.jpg", "test16c", "test16c testc", "test16c.jpg", 1, "testu testu", "testu.jpg", 0).
-					AddRow(17, "test17", "test17.tg", "test17.jpg", "test17c", "test17c testc", "test17c.jpg", 1, "testu testu", "testu.jpg", 0).
-					AddRow(18, "test18", "test18.tg", "test18.jpg", "test18c", "test18c testc", "test18c.jpg", 1, "testu testu", "testu.jpg", 0).
-					AddRow(19, "test19", "test19.tg", "test19.jpg", "test19c", "test19c testc", "test19c.jpg", 1, "testu testu", "testu.jpg", 0).
-					AddRow(20, "test20", "test20.tg", "test20.jpg", "test20c", "test20c testc", "test20c.jpg", 1, "testu testu", "testu.jpg", 0)
+					AddRow(11, "test11", "test11.tg", "test11.jpg", "test11c", "test11c testc", "test11c.jpg", 2, "test2u testu", "test2u.jpg", 0).
+					AddRow(12, "test12", "test12.tg", "test12.jpg", "test12c", "test12c testc", "test12c.jpg", 2, "test2u testu", "test2u.jpg", 0).
+					AddRow(13, "test13", "test13.tg", "test13.jpg", "test13c", "test13c testc", "test13c.jpg", 2, "test2u testu", "test2u.jpg", 0).
+					AddRow(14, "test14", "test14.tg", "test14.jpg", "test14c", "test14c testc", "test14c.jpg", 2, "test2u testu", "test2u.jpg", 0).
+					AddRow(15, "test15", "test15.tg", "test15.jpg", "test15c", "test15c testc", "test15c.jpg", 2, "test2u testu", "test2u.jpg", 0).
+					AddRow(16, "test16", "test16.tg", "test16.jpg", "test16c", "test16c testc", "test16c.jpg", 2, "test2u testu", "test2u.jpg", 0).
+					AddRow(17, "test17", "test17.tg", "test17.jpg", "test17c", "test17c testc", "test17c.jpg", 2, "test2u testu", "test2u.jpg", 0).
+					AddRow(18, "test18", "test18.tg", "test18.jpg", "test18c", "test18c testc", "test18c.jpg", 2, "test2u testu", "test2u.jpg", 0).
+					AddRow(19, "test19", "test19.tg", "test19.jpg", "test19c", "test19c testc", "test19c.jpg", 2, "test2u testu", "test2u.jpg", 0).
+					AddRow(20, "test20", "test20.tg", "test20.jpg", "test20c", "test20c testc", "test20c.jpg", 2, "test2u testu", "test2u.jpg", 0)
 
 				mock.ExpectQuery(
 					`SELECT 
@@ -670,13 +668,11 @@ func Test_GetFullMessagesByUserIDAndPage(t *testing.T) {
 					FROM message m
 					LEFT JOIN channel c ON c.id = m.channel_id 
 					LEFT JOIN tg_user u ON m.user_id = u.id 
-					WHERE m.user_id = $1
-					ORDER BY m.id DESC NULLS LAST OFFSET $2 LIMIT 10;`,
-				).WithArgs(1, 10).WillReturnRows(rows)
+					WHERE m.user_id = $1;`,
+				).WithArgs(2).WillReturnRows(rows)
 			},
-			ID:     1,
-			offset: 10,
-			want:   data[10:],
+			ID:   2,
+			want: data[10:],
 		},
 		{
 			name: "Error: [full messages by user ID not found]",
@@ -692,12 +688,10 @@ func Test_GetFullMessagesByUserIDAndPage(t *testing.T) {
 					FROM message m
 					LEFT JOIN channel c ON c.id = m.channel_id 
 					LEFT JOIN tg_user u ON m.user_id = u.id 
-					WHERE m.user_id = $1
-					ORDER BY m.id DESC NULLS LAST OFFSET $2 LIMIT 10;`,
-				).WithArgs(1, 0).WillReturnRows(rows)
+					WHERE m.user_id = $1;`,
+				).WithArgs(1).WillReturnRows(rows)
 			},
 			ID:             1,
-			offset:         0,
 			wantErr:        true,
 			expectedErrMsg: "full messages not found",
 		},
@@ -713,14 +707,12 @@ func Test_GetFullMessagesByUserIDAndPage(t *testing.T) {
 					FROM message m
 					LEFT JOIN channel c ON c.id = m.channel_id 
 					LEFT JOIN tg_user u ON m.user_id = u.id 
-					WHERE m.user_id = $1
-					ORDER BY m.id DESC NULLS LAST OFFSET $2 LIMIT 10;`,
-				).WithArgs(1, 0).WillReturnError(fmt.Errorf("some error"))
+					WHERE m.user_id = $1;`,
+				).WithArgs(1).WillReturnError(fmt.Errorf("some error"))
 			},
 			ID:             1,
-			offset:         0,
 			wantErr:        true,
-			expectedErrMsg: "failed to get full messages by user ID and page: some error",
+			expectedErrMsg: "failed to get full messages by user ID: some error",
 		},
 	}
 
@@ -728,7 +720,7 @@ func Test_GetFullMessagesByUserIDAndPage(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
-			got, err := r.GetFullMessagesByUserIDAndPage(tt.ID, tt.offset)
+			got, err := r.GetFullMessagesByUserID(tt.ID)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
