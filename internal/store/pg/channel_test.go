@@ -33,10 +33,10 @@ func Test_GetChannelsCount(t *testing.T) {
 		{
 			name: "Ok: [channels count found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id"}).
+				rows := sqlmock.NewRows([]string{"count"}).
 					AddRow(10)
 
-				mock.ExpectQuery("SELECT COUNT(id) FROM channel;").
+				mock.ExpectQuery("SELECT COUNT(*) FROM channel;").
 					WillReturnRows(rows)
 			},
 			want: 10,
@@ -44,9 +44,9 @@ func Test_GetChannelsCount(t *testing.T) {
 		{
 			name: "Error: [channels count not found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id"})
+				rows := sqlmock.NewRows([]string{"count"})
 
-				mock.ExpectQuery("SELECT COUNT(id) FROM channel;").
+				mock.ExpectQuery("SELECT COUNT(*) FROM channel;").
 					WillReturnRows(rows)
 			},
 			wantErr: true,
@@ -54,7 +54,7 @@ func Test_GetChannelsCount(t *testing.T) {
 		{
 			name: "Error: [some sql error]",
 			mock: func() {
-				mock.ExpectQuery("SELECT COUNT(id) FROM channel;").
+				mock.ExpectQuery("SELECT COUNT(*) FROM channel;").
 					WillReturnError(fmt.Errorf("some error"))
 			},
 			wantErr: true,
