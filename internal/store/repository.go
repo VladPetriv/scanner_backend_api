@@ -9,11 +9,18 @@ type ChannelRepo interface {
 	GetChannelByName(name string) (*model.Channel, error)
 }
 
+//go:generate mockery --dir . --name MessageRepo --output ./mocks
+type MessageRepo interface {
+	GetMessagesCount() (int, error)
+	GetMessagesCountByChannelID(ID int) (int, error)
+	GetFullMessageByID(ID int) (*model.FullMessage, error)
+	GetFullMessagesByPage(offset int) ([]model.FullMessage, error)
+	GetFullMessagesByChannelIDAndPage(ID, offset int) ([]model.FullMessage, error)
+	GetFullMessagesByUserIDAndPage(ID, offset int) ([]model.FullMessage, error)
+}
+
 //go:generate mockery --dir . --name UserRepo --output ./mocks
 type UserRepo interface{}
-
-//go:generate mockery --dir . --name MessageRepo --output ./mocks
-type MessageRepo interface{}
 
 //go:generate mockery --dir . --name ReplieRepo --output ./mocks
 type ReplieRepo interface{}
