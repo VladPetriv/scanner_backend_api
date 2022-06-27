@@ -8,14 +8,14 @@ CREATE TABLE channel (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255),
   title VARCHAR(255),
-  photourl TEXT NOT NULL
+  imageurl TEXT NOT NULL
 );
 
 CREATE TABLE tg_user (
   id SERIAL PRIMARY KEY,
   username VARCHAR(255) UNIQUE NOT NULL,
   fullname VARCHAR(255) NOT NULL,
-  photourl TEXT NOT NULL
+  imageurl TEXT NOT NULL
 );
 
 CREATE TABLE message (
@@ -24,7 +24,7 @@ CREATE TABLE message (
   user_id INT NOT NULL,
   title TEXT,
   message_url TEXT,
-  image TEXT,
+  imageurl TEXT,
   CONSTRAINT fk_channel FOREIGN KEY(channel_id) REFERENCES channel(id),
   CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES tg_user(id)
 );
