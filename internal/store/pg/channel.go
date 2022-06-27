@@ -7,7 +7,7 @@ import (
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 )
 
-var ErrChannelNotFound = errors.New("channel/s not found")
+var ErrChannelsNotFound = errors.New("channels not found")
 
 type ChannelRepo struct {
 	db *DB
@@ -20,7 +20,7 @@ func NewChannelRepo(db *DB) *ChannelRepo {
 func (c *ChannelRepo) GetChannelsCount() (int, error) {
 	var count int
 
-	err := c.db.Get(&count, "SELECT COUNT(id) FROM channel;")
+	err := c.db.Get(&count, "SELECT COUNT(*) FROM channel;")
 	if err != nil {
 		return count, fmt.Errorf("failed to get count of channel: %w", err)
 	}
@@ -37,7 +37,7 @@ func (c *ChannelRepo) GetChannelsByPage(offset int) ([]model.Channel, error) {
 	}
 
 	if len(channels) == 0 {
-		return nil, ErrChannelNotFound
+		return nil, ErrChannelsNotFound
 	}
 
 	return channels, nil
