@@ -20,7 +20,9 @@ type MessageService interface {
 }
 
 //go:generate mockery --dir . --name ReplieService --output ./mocks
-type ReplieService interface{}
+type ReplieService interface {
+	GetFullRepliesByMessageID(ID int) ([]model.FullReplie, error)
+}
 
 //go:generate mockery --dir . --name UserService --output ./mocks
 type UserService interface{}
