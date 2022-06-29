@@ -27,10 +27,11 @@ func Test_GetMessagesCount(t *testing.T) {
 	r := pg.NewMessageRepo(&pg.DB{DB: sqlxDB})
 
 	tests := []struct {
-		name    string
-		mock    func()
-		want    int
-		wantErr bool
+		name           string
+		mock           func()
+		want           int
+		wantErr        bool
+		expectedErrMsg string
 	}{
 		{
 			name: "Ok: [messages count found]",
@@ -51,7 +52,8 @@ func Test_GetMessagesCount(t *testing.T) {
 				mock.ExpectQuery("SELECT COUNT(*) FROM message;").
 					WillReturnRows(rows)
 			},
-			wantErr: true,
+			wantErr:        true,
+			expectedErrMsg: "messages count not found",
 		},
 		{
 			name: "Error: [some sql error]",
@@ -59,7 +61,8 @@ func Test_GetMessagesCount(t *testing.T) {
 				mock.ExpectQuery("SELECT COUNT(*) FROM message;").
 					WillReturnError(fmt.Errorf("some error"))
 			},
-			wantErr: true,
+			wantErr:        true,
+			expectedErrMsg: "failed to get messages count: some error",
 		},
 	}
 
@@ -70,6 +73,7 @@ func Test_GetMessagesCount(t *testing.T) {
 			got, err := r.GetMessagesCount()
 			if tt.wantErr {
 				assert.Error(t, err)
+				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
 			} else {
 				assert.NoError(t, err)
 				assert.EqualValues(t, tt.want, got)
@@ -93,11 +97,12 @@ func Test_GetMessagesCountByChannelID(t *testing.T) {
 	r := pg.NewMessageRepo(&pg.DB{DB: sqlxDB})
 
 	tests := []struct {
-		name    string
-		mock    func()
-		input   int
-		want    int
-		wantErr bool
+		name           string
+		mock           func()
+		input          int
+		want           int
+		wantErr        bool
+		expectedErrMsg string
 	}{
 		{
 			name: "Ok: [messages count found]",
@@ -119,8 +124,9 @@ func Test_GetMessagesCountByChannelID(t *testing.T) {
 				mock.ExpectQuery("SELECT COUNT(*) FROM message WHERE channel_id = $1;").
 					WithArgs(1).WillReturnRows(rows)
 			},
-			input:   1,
-			wantErr: true,
+			input:          1,
+			wantErr:        true,
+			expectedErrMsg: "messages count not found",
 		},
 		{
 			name: "Error: [some sql error]",
@@ -128,8 +134,9 @@ func Test_GetMessagesCountByChannelID(t *testing.T) {
 				mock.ExpectQuery("SELECT COUNT(*) FROM message WHERE channel_id = $1;").
 					WithArgs(1).WillReturnError(fmt.Errorf("some error"))
 			},
-			input:   1,
-			wantErr: true,
+			input:          1,
+			wantErr:        true,
+			expectedErrMsg: "failed to get messages count by channel id: some error",
 		},
 	}
 
@@ -140,6 +147,7 @@ func Test_GetMessagesCountByChannelID(t *testing.T) {
 			got, err := r.GetMessagesCountByChannelID(tt.input)
 			if tt.wantErr {
 				assert.Error(t, err)
+				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
 			} else {
 				assert.NoError(t, err)
 				assert.EqualValues(t, tt.want, got)
@@ -226,7 +234,7 @@ func Test_GetFullMessageByID(t *testing.T) {
 			},
 			input:          1,
 			wantErr:        true,
-			expectedErrMsg: "failed to get full message by id: sql: no rows in result set",
+			expectedErrMsg: "full message not found",
 		},
 		{
 			name: "Error: [some error]",

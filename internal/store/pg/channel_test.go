@@ -25,10 +25,11 @@ func Test_GetChannelsCount(t *testing.T) {
 	r := pg.NewChannelRepo(&pg.DB{DB: sqlxDB})
 
 	tests := []struct {
-		name    string
-		mock    func()
-		want    int
-		wantErr bool
+		name           string
+		mock           func()
+		want           int
+		wantErr        bool
+		expectedErrMsg string
 	}{
 		{
 			name: "Ok: [channels count found]",
@@ -49,7 +50,8 @@ func Test_GetChannelsCount(t *testing.T) {
 				mock.ExpectQuery("SELECT COUNT(*) FROM channel;").
 					WillReturnRows(rows)
 			},
-			wantErr: true,
+			wantErr:        true,
+			expectedErrMsg: "channels count not found",
 		},
 		{
 			name: "Error: [some sql error]",
@@ -57,7 +59,8 @@ func Test_GetChannelsCount(t *testing.T) {
 				mock.ExpectQuery("SELECT COUNT(*) FROM channel;").
 					WillReturnError(fmt.Errorf("some error"))
 			},
-			wantErr: true,
+			wantErr:        true,
+			expectedErrMsg: "failed to get count of channels: some error",
 		},
 	}
 
@@ -68,6 +71,7 @@ func Test_GetChannelsCount(t *testing.T) {
 			got, err := r.GetChannelsCount()
 			if tt.wantErr {
 				assert.Error(t, err)
+				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
 			} else {
 				assert.NoError(t, err)
 				assert.EqualValues(t, tt.want, got)
@@ -98,11 +102,12 @@ func Test_GetChannelsByPage(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		mock    func()
-		input   int
-		want    []model.Channel
-		wantErr bool
+		name           string
+		mock           func()
+		input          int
+		want           []model.Channel
+		wantErr        bool
+		expectedErrMsg string
 	}{
 		{
 			name: "Ok: [channels found with offset 0]",
@@ -138,8 +143,9 @@ func Test_GetChannelsByPage(t *testing.T) {
 				mock.ExpectQuery("SELECT * FROM channel OFFSET $1 LIMIT 10;").
 					WithArgs(0).WillReturnRows(rows)
 			},
-			input:   0,
-			wantErr: true,
+			input:          0,
+			wantErr:        true,
+			expectedErrMsg: "channels not found",
 		},
 		{
 			name: "Error: [some sql error]",
@@ -147,7 +153,8 @@ func Test_GetChannelsByPage(t *testing.T) {
 				mock.ExpectQuery("SELECT * FROM channel OFFSET $1 LIMIT 10;").
 					WillReturnError(fmt.Errorf("some error"))
 			},
-			wantErr: true,
+			wantErr:        true,
+			expectedErrMsg: "failed to get channels by page: some error",
 		},
 	}
 
@@ -158,6 +165,7 @@ func Test_GetChannelsByPage(t *testing.T) {
 			got, err := r.GetChannelsByPage(tt.input)
 			if tt.wantErr {
 				assert.Error(t, err)
+				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
 			} else {
 				assert.NoError(t, err)
 				assert.EqualValues(t, tt.want, got)
@@ -188,11 +196,12 @@ func Test_GetChannelByName(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		mock    func()
-		input   string
-		want    *model.Channel
-		wantErr bool
+		name           string
+		mock           func()
+		input          string
+		want           *model.Channel
+		wantErr        bool
+		expectedErrMsg string
 	}{
 		{
 			name: "Ok: [channel found]",
@@ -214,8 +223,9 @@ func Test_GetChannelByName(t *testing.T) {
 				mock.ExpectQuery("SELECT * FROM channel WHERE name = $1;").
 					WithArgs("404").WillReturnRows(rows)
 			},
-			input:   "404",
-			wantErr: true,
+			input:          "404",
+			wantErr:        true,
+			expectedErrMsg: "channel not found",
 		},
 		{
 			name: "Error: [some sql error]",
@@ -223,7 +233,8 @@ func Test_GetChannelByName(t *testing.T) {
 				mock.ExpectQuery("SELECT * FROM channel WHERE name = $1;").
 					WillReturnError(fmt.Errorf("some error"))
 			},
-			wantErr: true,
+			wantErr:        true,
+			expectedErrMsg: "failed to get channel by name: some error",
 		},
 	}
 
