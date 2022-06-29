@@ -25,7 +25,9 @@ type ReplieService interface {
 }
 
 //go:generate mockery --dir . --name UserService --output ./mocks
-type UserService interface{}
+type UserService interface {
+	GetUserByID(ID int) (*model.User, error)
+}
 
 //go:generate mockery --dir . --name WebUserService --output ./mocks
 type WebUserService interface{}

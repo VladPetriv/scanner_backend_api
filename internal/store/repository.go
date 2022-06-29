@@ -25,7 +25,9 @@ type ReplieRepo interface {
 }
 
 //go:generate mockery --dir . --name UserRepo --output ./mocks
-type UserRepo interface{}
+type UserRepo interface {
+	GetUserByID(ID int) (*model.User, error)
+}
 
 //go:generate mockery --dir . --name WebUserRepo --output ./mocks
 type WebUserRepo interface{}
