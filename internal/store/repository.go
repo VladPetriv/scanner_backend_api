@@ -30,7 +30,10 @@ type UserRepo interface {
 }
 
 //go:generate mockery --dir . --name WebUserRepo --output ./mocks
-type WebUserRepo interface{}
+type WebUserRepo interface {
+	GetWebUserByEmail(email string) (*model.WebUser, error)
+	CreateWebUser(user *model.WebUser) (int, error)
+}
 
 //go:generate mockery --dir . --name SavedRepo --output ./mocks
 type SavedRepo interface{}

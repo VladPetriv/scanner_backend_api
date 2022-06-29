@@ -30,7 +30,10 @@ type UserService interface {
 }
 
 //go:generate mockery --dir . --name WebUserService --output ./mocks
-type WebUserService interface{}
+type WebUserService interface {
+	GetWebUserByEmail(email string) (*model.WebUser, error)
+	CreateWebUser(user *model.WebUser) error
+}
 
 //go:generate mockery --dir . --name SavedService --output ./mocks
 type SavedService interface{}
