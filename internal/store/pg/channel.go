@@ -1,13 +1,18 @@
 package pg
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 )
 
-var ErrChannelsNotFound = errors.New("channels not found")
+var (
+	ErrChannelsCountNotFound = errors.New("channels count not found")
+	ErrChannelsNotFound      = errors.New("channels not found")
+	ErrChannelNotFound       = errors.New("channel not found")
+)
 
 type ChannelRepo struct {
 	db *DB
@@ -21,8 +26,12 @@ func (c *ChannelRepo) GetChannelsCount() (int, error) {
 	var count int
 
 	err := c.db.Get(&count, "SELECT COUNT(*) FROM channel;")
+	if err == sql.ErrNoRows {
+		return 0, ErrChannelsCountNotFound
+	}
+
 	if err != nil {
-		return count, fmt.Errorf("failed to get count of channel: %w", err)
+		return count, fmt.Errorf("failed to get count of channels: %w", err)
 	}
 
 	return count, nil
@@ -47,6 +56,9 @@ func (c *ChannelRepo) GetChannelByName(name string) (*model.Channel, error) {
 	var channel model.Channel
 
 	err := c.db.Get(&channel, "SELECT * FROM channel WHERE name = $1;", name)
+	if err == sql.ErrNoRows {
+		return nil, ErrChannelsNotFound
+	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get channel by name: %w", err)
 	}

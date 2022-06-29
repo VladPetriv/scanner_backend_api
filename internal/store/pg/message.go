@@ -1,13 +1,18 @@
 package pg
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 )
 
-var ErrFullMessagesNotFound = errors.New("full messages not found")
+var (
+	ErrMessagesCountNotFound = errors.New("messages count not found")
+	ErrFullMessagesNotFound  = errors.New("full messages not found")
+	ErrFullMessageNotFound   = errors.New("full message not found")
+)
 
 type MessageRepo struct {
 	db *DB
@@ -21,8 +26,12 @@ func (m *MessageRepo) GetMessagesCount() (int, error) {
 	var count int
 
 	err := m.db.Get(&count, "SELECT COUNT(*) FROM message;")
+	if err == sql.ErrNoRows {
+		return 0, ErrMessagesCountNotFound
+	}
+
 	if err != nil {
-		return count, fmt.Errorf("failed to get messages count: %w", err)
+		return 0, fmt.Errorf("failed to get messages count: %w", err)
 	}
 
 	return count, nil
@@ -32,6 +41,10 @@ func (m *MessageRepo) GetMessagesCountByChannelID(ID int) (int, error) {
 	var count int
 
 	err := m.db.Get(&count, "SELECT COUNT(*) FROM message WHERE channel_id = $1;", ID)
+	if err == sql.ErrNoRows {
+		return 0, ErrMessagesCountNotFound
+	}
+
 	if err != nil {
 		return 0, fmt.Errorf("failed to get messages count by channel id: %w", err)
 	}
@@ -138,12 +151,11 @@ func (m *MessageRepo) GetFullMessageByID(ID int) (*model.FullMessage, error) {
 		WHERE m.id = $1;`,
 		ID,
 	)
+	if err == sql.ErrNoRows {
+		return nil, ErrFullMessageNotFound
+	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get full message by id: %w", err)
-	}
-
-	if message.Title == "" {
-		return nil, ErrFullMessagesNotFound
 	}
 
 	return &message, nil
