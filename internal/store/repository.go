@@ -36,4 +36,8 @@ type WebUserRepo interface {
 }
 
 //go:generate mockery --dir . --name SavedRepo --output ./mocks
-type SavedRepo interface{}
+type SavedRepo interface {
+	GetSavedMessages(ID int) ([]model.Saved, error)
+	CreateSavedMessage(savedMessage *model.Saved) (int, error)
+	DeleteSavedMessage(ID int) (int, error)
+}

@@ -1,7 +1,7 @@
 package model
 
 type Saved struct {
-	ID        int `json:"id"`
-	UserID    int `json:"userId"`
-	MessageID int `json:"messageId"`
+	ID        int `json:"id" db:"id"`
+	UserID    int `json:"userId" db:"user_id"`
+	MessageID int `json:"messageId" db:"message_id"`
 }

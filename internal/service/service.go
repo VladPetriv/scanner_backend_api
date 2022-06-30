@@ -36,4 +36,8 @@ type WebUserService interface {
 }
 
 //go:generate mockery --dir . --name SavedService --output ./mocks
-type SavedService interface{}
+type SavedService interface {
+	GetSavedMessages(ID int) ([]model.Saved, error)
+	CreateSavedMessage(savedMessage *model.Saved) error
+	DeleteSavedMessage(ID int) error
+}
