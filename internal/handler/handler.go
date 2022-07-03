@@ -33,6 +33,12 @@ func (h *Handler) InitRoutes() *mux.Router {
 	channel.HandleFunc("/{name}", h.GetChannelByNameHandler).Methods(http.MethodGet)
 	channel.HandleFunc("/", h.GetChannelsByPageHandler).Methods(http.MethodGet)
 
+	user := router.PathPrefix("/user").Subrouter()
+	user.HandleFunc("/{id}", h.GetUserByIDHandler).Methods(http.MethodGet)
+
+	replie := router.PathPrefix("/replie").Subrouter()
+	replie.HandleFunc("/{message_id}", h.GetFullRepliesByMessageIDHandler).Methods(http.MethodGet)
+
 	h.logAllRoutes(router)
 
 	return router
