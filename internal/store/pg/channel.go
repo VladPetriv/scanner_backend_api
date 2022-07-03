@@ -57,7 +57,7 @@ func (c *ChannelRepo) GetChannelByName(name string) (*model.Channel, error) {
 
 	err := c.db.Get(&channel, "SELECT * FROM channel WHERE name = $1;", name)
 	if err == sql.ErrNoRows {
-		return nil, ErrChannelsNotFound
+		return nil, ErrChannelNotFound
 	}
 	if err != nil {
 		return nil, fmt.Errorf("failed to get channel by name: %w", err)
