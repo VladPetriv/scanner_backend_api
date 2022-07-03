@@ -34,17 +34,18 @@ func Test_GetFullRepliesByMessageID(t *testing.T) {
 		{
 			name: "Ok: [full replies found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id", "title", "messageId", "userId", "fullname", "imageurl"}).
+				rows := sqlmock.NewRows([]string{"id", "title", "messageid", "userid", "fullname", "imageurl"}).
 					AddRow(1, "test1", 1, 1, "test1 test1", "test1.jpg").
 					AddRow(2, "test2", 1, 2, "test2 test2", "test2.jpg")
 
 				mock.ExpectQuery(
 					`SELECT
-					r.id, r.title, r.message_id as messageId 
+					r.id, r.title, r.message_id as messageId,
 					u.id as userId, u.fullname, u.imageurl 	
 					FROM replie r 
-					LEFT JOIN tg_user u ON u.id = r.user_id,
-					WHERE r.message_id = $1;`,
+					LEFT JOIN tg_user u ON u.id = r.user_id
+					WHERE r.message_id = $1
+					ORDER BY r.id DESC NULLS LAST;`,
 				).WithArgs(1).WillReturnRows(rows)
 			},
 			input: 1,
@@ -56,15 +57,16 @@ func Test_GetFullRepliesByMessageID(t *testing.T) {
 		{
 			name: "Error: [full replies not found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id", "title", "messageId", "userId", "fullname", "imageurl"})
+				rows := sqlmock.NewRows([]string{"id", "title", "messageid", "userid", "fullname", "imageurl"})
 
 				mock.ExpectQuery(
 					`SELECT
-					r.id, r.title, r.message_id as messageId 
+					r.id, r.title, r.message_id as messageId,
 					u.id as userId, u.fullname, u.imageurl 	
 					FROM replie r 
-					LEFT JOIN tg_user u ON u.id = r.user_id,
-					WHERE r.message_id = $1;`,
+					LEFT JOIN tg_user u ON u.id = r.user_id
+					WHERE r.message_id = $1
+					ORDER BY r.id DESC NULLS LAST;`,
 				).WithArgs(1).WillReturnRows(rows)
 			},
 			input:          1,
@@ -76,11 +78,12 @@ func Test_GetFullRepliesByMessageID(t *testing.T) {
 			mock: func() {
 				mock.ExpectQuery(
 					`SELECT
-					r.id, r.title, r.message_id as messageId 
+					r.id, r.title, r.message_id as messageId,
 					u.id as userId, u.fullname, u.imageurl 	
 					FROM replie r 
-					LEFT JOIN tg_user u ON u.id = r.user_id,
-					WHERE r.message_id = $1;`,
+					LEFT JOIN tg_user u ON u.id = r.user_id
+					WHERE r.message_id = $1
+					ORDER BY r.id DESC NULLS LAST;`,
 				).WithArgs(1).WillReturnError(fmt.Errorf("some error"))
 			},
 			input:          1,
