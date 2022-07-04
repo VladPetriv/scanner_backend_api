@@ -39,6 +39,14 @@ func (h *Handler) InitRoutes() *mux.Router {
 	replie := router.PathPrefix("/replie").Subrouter()
 	replie.HandleFunc("/{message_id}", h.GetFullRepliesByMessageIDHandler).Methods(http.MethodGet)
 
+	message := router.PathPrefix("/message").Subrouter()
+	message.HandleFunc("/count", h.GetMessagesCountHandler).Methods(http.MethodGet)
+	message.HandleFunc("/count/{channel_id}", h.GetMessagesCountByChannelIDHandler).Methods(http.MethodGet)
+	message.HandleFunc("/", h.GetFullMessagesByPageHandler).Methods(http.MethodGet)
+	message.HandleFunc("/channel/{channel_id}", h.GetFullMessagesByChannelIDAndPageHandler).Methods(http.MethodGet)
+	message.HandleFunc("/user/{user_id}", h.GetFullMessagesByUserIDHandler).Methods(http.MethodGet)
+	message.HandleFunc("/{message_id}", h.GetFullMessageByIDHandler).Methods(http.MethodGet)
+
 	h.logAllRoutes(router)
 
 	return router
@@ -52,6 +60,9 @@ func (h *Handler) logAllRoutes(router *mux.Router) {
 		}
 
 		met, _ := route.GetMethods()
+		if len(met) == 0 {
+			met = append(met, "SUBROUTER")
+		}
 
 		h.log.Info(fmt.Sprintf("Route - %s %s", tpl, met))
 
