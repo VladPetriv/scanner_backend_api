@@ -24,7 +24,7 @@ func main() {
 		log.Error("failed to create store", zap.Error(err))
 	}
 
-	service, err := service.New(store)
+	service, err := service.New(store, cfg.JwtSecretKey)
 	if err != nil {
 		log.Error("failed to create service", zap.Error(err))
 	}
