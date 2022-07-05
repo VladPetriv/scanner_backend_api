@@ -41,3 +41,9 @@ type SavedService interface {
 	CreateSavedMessage(savedMessage *model.Saved) error
 	DeleteSavedMessage(ID int) error
 }
+
+//go:generate mockery --dir . --name JwtService --output ./mocks
+type JwtService interface {
+	GenerateToken(userEmail string) (string, error)
+	ParseToken(accessToken string) (string, error)
+}

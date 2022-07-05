@@ -15,9 +15,10 @@ type Manager struct {
 	User    UserService
 	WebUser WebUserService
 	Saved   SavedService
+	Jwt     JwtService
 }
 
-func New(store *store.Store) (*Manager, error) {
+func New(store *store.Store, secretJWTKey string) (*Manager, error) {
 	if store == nil {
 		return nil, ErrNoStore
 	}
@@ -29,5 +30,6 @@ func New(store *store.Store) (*Manager, error) {
 		User:    NewUserService(store),
 		WebUser: NewWebUserService(store),
 		Saved:   NewSavedService(store),
+		Jwt:     NewJwtService(secretJWTKey),
 	}, nil
 }
