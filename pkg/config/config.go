@@ -12,6 +12,7 @@ type Config struct {
 	DBMigrationsPath string
 	LogLevel         string
 	Port             string
+	JwtSecretKey     string
 }
 
 func Get() (*Config, error) {
@@ -24,5 +25,6 @@ func Get() (*Config, error) {
 		DBMigrationsPath: os.Getenv("DB_MIGRATION_PATH"),
 		LogLevel:         os.Getenv("LOG_LEVEL"),
 		Port:             os.Getenv("PORT"),
+		JwtSecretKey:     os.Getenv("JWT_SECRET_KEY"),
 	}, nil
 }
