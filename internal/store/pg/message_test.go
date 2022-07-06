@@ -195,7 +195,7 @@ func Test_GetFullMessageByID(t *testing.T) {
 		{
 			name: "Ok: [full message by ID found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"}).
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"}).
 					AddRow(1, "test", "test.tg", "test.jpg", "testc", "testc testc", "testc.jpg", 1, "testu testu", "testu.jpg", 0)
 
 				mock.ExpectQuery(
@@ -217,7 +217,7 @@ func Test_GetFullMessageByID(t *testing.T) {
 		{
 			name: "Error: [full message by ID not found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"})
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"})
 
 				mock.ExpectQuery(
 					`SELECT 
@@ -310,7 +310,7 @@ func Test_GetFullMessagesByPage(t *testing.T) {
 		{
 			name: "Ok: [full messages with offset 0 found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"}).
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"}).
 					AddRow(1, "test1", "test1.tg", "test1.jpg", "test1c", "test1c testc", "test1c.jpg", 1, "test1u testu", "test1u.jpg", 0).
 					AddRow(2, "test2", "test2.tg", "test2.jpg", "test2c", "test2c testc", "test2c.jpg", 2, "test2u testu", "test2u.jpg", 0).
 					AddRow(3, "test3", "test3.tg", "test3.jpg", "test3c", "test3c testc", "test3c.jpg", 3, "test3u testu", "test3u.jpg", 0).
@@ -341,7 +341,7 @@ func Test_GetFullMessagesByPage(t *testing.T) {
 		{
 			name: "Ok: [full messages with offset 10 found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"}).
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"}).
 					AddRow(11, "test11", "test11.tg", "test11.jpg", "test11c", "test11c testc", "test11c.jpg", 11, "test11u testu", "test11u.jpg", 0).
 					AddRow(12, "test12", "test12.tg", "test12.jpg", "test12c", "test12c testc", "test12c.jpg", 12, "test12u testu", "test12u.jpg", 0).
 					AddRow(13, "test13", "test13.tg", "test13.jpg", "test13c", "test13c testc", "test13c.jpg", 13, "test13u testu", "test13u.jpg", 0).
@@ -371,7 +371,7 @@ func Test_GetFullMessagesByPage(t *testing.T) {
 		{
 			name: "Error: [full messages not found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"})
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"})
 
 				mock.ExpectQuery(
 					`SELECT 
@@ -463,7 +463,7 @@ func Test_GetFullMessagesByChannelIDAndPage(t *testing.T) {
 		{
 			name: "Ok: [full messages by channel ID with offset 0 found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"}).
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"}).
 					AddRow(1, "test1", "test1.tg", "test1.jpg", "testc", "testc testc", "testc.jpg", 1, "test1u testu", "test1u.jpg", 0).
 					AddRow(2, "test2", "test2.tg", "test2.jpg", "testc", "testc testc", "testc.jpg", 2, "test2u testu", "test2u.jpg", 0).
 					AddRow(3, "test3", "test3.tg", "test3.jpg", "testc", "testc testc", "testc.jpg", 3, "test3u testu", "test3u.jpg", 0).
@@ -496,7 +496,7 @@ func Test_GetFullMessagesByChannelIDAndPage(t *testing.T) {
 		{
 			name: "Ok: [full messages by channel ID with offset 10 found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"}).
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"}).
 					AddRow(11, "test11", "test11.tg", "test11.jpg", "testc", "testc testc", "testc.jpg", 11, "test11u testu", "test11u.jpg", 0).
 					AddRow(12, "test12", "test12.tg", "test12.jpg", "testc", "testc testc", "testc.jpg", 12, "test12u testu", "test12u.jpg", 0).
 					AddRow(13, "test13", "test13.tg", "test13.jpg", "testc", "testc testc", "testc.jpg", 13, "test13u testu", "test13u.jpg", 0).
@@ -528,7 +528,7 @@ func Test_GetFullMessagesByChannelIDAndPage(t *testing.T) {
 		{
 			name: "Error: [full messages by channel ID not found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"})
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"})
 
 				mock.ExpectQuery(
 					`SELECT 
@@ -624,7 +624,7 @@ func Test_GetFullMessagesByUserID(t *testing.T) {
 		{
 			name: "Ok: [full messages by user ID found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"}).
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"}).
 					AddRow(1, "test1", "test1.tg", "test1.jpg", "test1c", "test1c testc", "test1c.jpg", 1, "testu testu", "testu.jpg", 0).
 					AddRow(2, "test2", "test2.tg", "test2.jpg", "test2c", "test2c testc", "test2c.jpg", 1, "testu testu", "testu.jpg", 0).
 					AddRow(3, "test3", "test3.tg", "test3.jpg", "test3c", "test3c testc", "test3c.jpg", 1, "testu testu", "testu.jpg", 0).
@@ -655,7 +655,7 @@ func Test_GetFullMessagesByUserID(t *testing.T) {
 		{
 			name: "Ok: [full messages by user ID found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"}).
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"}).
 					AddRow(11, "test11", "test11.tg", "test11.jpg", "test11c", "test11c testc", "test11c.jpg", 2, "test2u testu", "test2u.jpg", 0).
 					AddRow(12, "test12", "test12.tg", "test12.jpg", "test12c", "test12c testc", "test12c.jpg", 2, "test2u testu", "test2u.jpg", 0).
 					AddRow(13, "test13", "test13.tg", "test13.jpg", "test13c", "test13c testc", "test13c.jpg", 2, "test2u testu", "test2u.jpg", 0).
@@ -685,7 +685,7 @@ func Test_GetFullMessagesByUserID(t *testing.T) {
 		{
 			name: "Error: [full messages by user ID not found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"messageId", "messageTitle", "messageUrl", "messageImageUrl", "channelName", "channelTitle", "channelImageUrl", "userId", "userFullname", "userImageUrl", "count"})
+				rows := sqlmock.NewRows([]string{"messageid", "messagetitle", "messageurl", "messageimageurl", "channelname", "channeltitle", "channelimageurl", "userid", "userfullname", "userimageurl", "count"})
 
 				mock.ExpectQuery(
 					`SELECT 
