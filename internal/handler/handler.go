@@ -51,6 +51,12 @@ func (h *Handler) InitRoutes() *mux.Router {
 	auth.HandleFunc("/sign-up", h.SignUpHandler).Methods(http.MethodPost)
 	auth.HandleFunc("/sign-in", h.SignInHandler).Methods(http.MethodPost)
 
+	saved := router.PathPrefix("/saved").Subrouter()
+	saved.Use(h.AuthenticateMiddleware)
+	saved.HandleFunc("/{user_id}", h.GetSavedMessagesHandler).Methods(http.MethodGet)
+	saved.HandleFunc("/create", h.CreateSavedMessageHandler).Methods(http.MethodPost)
+	saved.HandleFunc("/delete/{message_id}", h.DeleteSavedMessageHandler).Methods(http.MethodDelete)
+
 	h.logAllRoutes(router)
 
 	return router
