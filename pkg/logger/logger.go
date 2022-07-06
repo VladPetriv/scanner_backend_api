@@ -30,7 +30,7 @@ func Get() *Logger {
 		fileEncoder := zapcore.NewJSONEncoder(config)
 		consoleEncoder := zapcore.NewConsoleEncoder(config)
 
-		err = os.MkdirAll("logs", 0o644) // nolint
+		err = os.MkdirAll("logs", 0o755) // nolint
 		if err != nil {
 			panic(err)
 		}
