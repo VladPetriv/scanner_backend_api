@@ -191,7 +191,7 @@ func Test_DeleteSavedMessage(t *testing.T) {
 				rows := sqlmock.NewRows([]string{"id"}).
 					AddRow(1)
 
-				mock.ExpectQuery("DELETE FROM saved WHERE id = $1;").
+				mock.ExpectQuery("DELETE FROM saved WHERE id = $1 RETURNING id;").
 					WithArgs(1).WillReturnRows(rows)
 			},
 			input: 1,
@@ -202,7 +202,7 @@ func Test_DeleteSavedMessage(t *testing.T) {
 			mock: func() {
 				rows := sqlmock.NewRows([]string{"id"})
 
-				mock.ExpectQuery("DELETE FROM saved WHERE id = $1;").
+				mock.ExpectQuery("DELETE FROM saved WHERE id = $1 RETURNING id;").
 					WithArgs(1).WillReturnRows(rows)
 			},
 			input:          1,
@@ -212,7 +212,7 @@ func Test_DeleteSavedMessage(t *testing.T) {
 		{
 			name: "Error: [some sql error]",
 			mock: func() {
-				mock.ExpectQuery("DELETE FROM saved WHERE id = $1;").
+				mock.ExpectQuery("DELETE FROM saved WHERE id = $1 RETURNING id;").
 					WithArgs(1).WillReturnError(fmt.Errorf("some error"))
 			},
 			input:          1,

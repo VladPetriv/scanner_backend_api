@@ -58,7 +58,7 @@ func (s *SavedRepo) CreateSavedMessage(savedMessage *model.Saved) (int, error) {
 func (s *SavedRepo) DeleteSavedMessage(ID int) (int, error) {
 	var id int
 
-	row := s.db.QueryRow("DELETE FROM saved WHERE id = $1;", ID)
+	row := s.db.QueryRow("DELETE FROM saved WHERE id = $1 RETURNING id;", ID)
 	if err := row.Scan(&id); err != nil {
 		if err == sql.ErrNoRows {
 			return 0, ErrSavedMessageNotDeleted
