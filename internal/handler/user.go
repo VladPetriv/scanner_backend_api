@@ -24,9 +24,9 @@ func (h *Handler) GetUserByIDHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.log.Error("get user by id error", zap.String("id", strconv.Itoa(userID)), zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrUserNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return
