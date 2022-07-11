@@ -12,12 +12,13 @@ import (
 )
 
 func main() {
-	log := logger.Get()
 
 	cfg, err := config.Get()
 	if err != nil {
-		log.Error("failed to load config", zap.Error(err))
+		panic(err)
 	}
+
+	log := logger.Get(cfg.LogLevel)
 
 	store, err := store.New(cfg, log)
 	if err != nil {
