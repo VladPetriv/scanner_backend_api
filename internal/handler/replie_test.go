@@ -121,6 +121,8 @@ func Test_GetFullRepliesByMessageIDHandler(t *testing.T) {
 				assert.EqualValues(t, tt.expectedReplies, decodedReplies)
 				assert.EqualValues(t, tt.expectedCode, rr.Code)
 			}
+
+			replieSrv.AssertExpectations(t)
 		})
 	}
 }
