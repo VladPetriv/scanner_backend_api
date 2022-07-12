@@ -7,6 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/VladPetriv/scanner_backend_api/internal/handler"
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 	"github.com/VladPetriv/scanner_backend_api/internal/service"
@@ -14,12 +17,9 @@ import (
 	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 	"github.com/VladPetriv/scanner_backend_api/pkg/lib"
 	"github.com/VladPetriv/scanner_backend_api/pkg/logger"
-	"github.com/gorilla/mux"
-	"github.com/stretchr/testify/assert"
 )
 
 func Test_GetUserByIDHandler(t *testing.T) {
-
 	testUser := &model.User{
 		ID:       1,
 		Username: "test",
@@ -28,13 +28,13 @@ func Test_GetUserByIDHandler(t *testing.T) {
 	}
 
 	tests := []struct {
-		name         string
-		mock         func(userSrv *mocks.UserService)
-		input        string
-		wantErr      bool
-		expectError  lib.HttpError
-		expectedUser model.User
-		expectedCode int
+		name          string
+		mock          func(userSrv *mocks.UserService)
+		input         string
+		wantErr       bool
+		expectedError lib.HttpError
+		expectedUser  model.User
+		expectedCode  int
 	}{
 		{
 			name: "Ok: [user found]",
@@ -50,28 +50,28 @@ func Test_GetUserByIDHandler(t *testing.T) {
 			mock: func(userSrv *mocks.UserService) {
 				userSrv.On("GetUserByID", 1).Return(nil, fmt.Errorf("[User] srv.GetUserByID error: %w", pg.ErrUserNotFound))
 			},
-			input:        "1",
-			wantErr:      true,
-			expectedCode: http.StatusNotFound,
-			expectError:  lib.HttpError{Code: 404, Name: "Not Found", Message: "user not found"},
+			input:         "1",
+			wantErr:       true,
+			expectedCode:  http.StatusNotFound,
+			expectedError: lib.HttpError{Code: 404, Name: "Not Found", Message: "user not found"},
 		},
 		{
 			name: "Error: [some internal error]",
 			mock: func(userSrv *mocks.UserService) {
 				userSrv.On("GetUserByID", 1).Return(nil, fmt.Errorf("[User] srv.GetUserByID error: %w", fmt.Errorf("some internal error")))
 			},
-			input:        "1",
-			wantErr:      true,
-			expectedCode: http.StatusInternalServerError,
-			expectError:  lib.HttpError{Code: 500, Name: "Internal Server Error", Message: "[User] srv.GetUserByID error: some internal error"},
+			input:         "1",
+			wantErr:       true,
+			expectedCode:  http.StatusInternalServerError,
+			expectedError: lib.HttpError{Code: 500, Name: "Internal Server Error", Message: "[User] srv.GetUserByID error: some internal error"},
 		},
 		{
-			name:         "Error: [user id is not valid]",
-			mock:         func(userSrv *mocks.UserService) {},
-			input:        "hello",
-			wantErr:      true,
-			expectedCode: http.StatusBadRequest,
-			expectError:  lib.HttpError{Code: 400, Name: "Bad Request", Message: "user id is not valid"},
+			name:          "Error: [user id is not valid]",
+			mock:          func(userSrv *mocks.UserService) {},
+			input:         "hello",
+			wantErr:       true,
+			expectedCode:  http.StatusBadRequest,
+			expectedError: lib.HttpError{Code: 400, Name: "Bad Request", Message: "user id is not valid"},
 		},
 	}
 
@@ -101,7 +101,7 @@ func Test_GetUserByIDHandler(t *testing.T) {
 			if tt.wantErr {
 				json.NewDecoder(rr.Body).Decode(&decodedErr)
 
-				assert.EqualValues(t, tt.expectError, decodedErr)
+				assert.EqualValues(t, tt.expectedError, decodedErr)
 				assert.EqualValues(t, tt.expectedCode, rr.Code)
 			} else {
 				json.NewDecoder(rr.Body).Decode(&decodedUser)
