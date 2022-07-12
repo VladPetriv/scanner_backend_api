@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
+
+	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 )
 
 func (h *Handler) GetFullRepliesByMessageIDHandler(w http.ResponseWriter, r *http.Request) {
@@ -24,9 +25,9 @@ func (h *Handler) GetFullRepliesByMessageIDHandler(w http.ResponseWriter, r *htt
 	if err != nil {
 		h.log.Error("get full replies by message id error", zap.String("id", strconv.Itoa(messageID)), zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrFullRepliesNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return
