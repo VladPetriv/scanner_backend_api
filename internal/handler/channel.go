@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
+
+	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 )
 
 func (h *Handler) GetChannelsCountHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,9 +16,9 @@ func (h *Handler) GetChannelsCountHandler(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		h.log.Error("get channels count error", zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrChannelsCountNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return
@@ -38,9 +39,9 @@ func (h *Handler) GetChannelByNameHandler(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		h.log.Error("get channel by name error", zap.String("name", name), zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrChannelNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return
@@ -68,9 +69,9 @@ func (h *Handler) GetChannelsByPageHandler(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		h.log.Error("get channels by page error", zap.String("page", strconv.Itoa(page)), zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrChannelsNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return

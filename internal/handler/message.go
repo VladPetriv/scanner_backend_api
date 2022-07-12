@@ -6,9 +6,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
+
+	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 )
 
 func (h *Handler) GetMessagesCountHandler(w http.ResponseWriter, r *http.Request) {
@@ -16,9 +17,9 @@ func (h *Handler) GetMessagesCountHandler(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		h.log.Error("get messages count error", zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrMessagesCountNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return
@@ -46,9 +47,9 @@ func (h *Handler) GetMessagesCountByChannelIDHandler(w http.ResponseWriter, r *h
 	if err != nil {
 		h.log.Error("get messages count by channel id error", zap.String("id", strconv.Itoa(channelID)), zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrMessagesCountNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return
@@ -76,9 +77,9 @@ func (h *Handler) GetFullMessagesByPageHandler(w http.ResponseWriter, r *http.Re
 	if err != nil {
 		h.log.Error("get messages by page error", zap.String("page", strconv.Itoa(page)), zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrFullMessagesNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return
@@ -115,9 +116,9 @@ func (h *Handler) GetFullMessagesByChannelIDAndPageHandler(w http.ResponseWriter
 	if err != nil {
 		h.log.Error("get full messages by page and channel id error", zap.String("id,page", fmt.Sprintf("%d,%d", channelID, page)))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrFullMessagesNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return
@@ -145,9 +146,9 @@ func (h *Handler) GetFullMessagesByUserIDHandler(w http.ResponseWriter, r *http.
 	if err != nil {
 		h.log.Error("get full messages by user id error", zap.String("id", strconv.Itoa(userID)), zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrFullMessagesNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return
@@ -174,9 +175,9 @@ func (h *Handler) GetFullMessageByIDHandler(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		h.log.Error("get message by id error", zap.String("id", strconv.Itoa(messageID)), zap.Error(err))
 
-		err = errors.Unwrap(err)
-
 		if errors.Is(err, pg.ErrFullMessageNotFound) {
+			err = errors.Unwrap(err)
+
 			h.WriteError(w, http.StatusNotFound, err.Error())
 
 			return

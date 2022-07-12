@@ -6,10 +6,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/VladPetriv/scanner_backend_api/internal/model"
-	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
+
+	"github.com/VladPetriv/scanner_backend_api/internal/model"
+	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 )
 
 func (h *Handler) GetSavedMessagesHandler(w http.ResponseWriter, r *http.Request) {
