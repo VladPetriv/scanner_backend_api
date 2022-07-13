@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 
 	"go.uber.org/zap"
-	"net/http"
 
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
-	"github.com/VladPetriv/scanner_backend_api/pkg/utils"
 )
 
 func (h *Handler) SignUpHandler(w http.ResponseWriter, r *http.Request) {
@@ -36,13 +35,6 @@ func (h *Handler) SignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	if candidate != nil {
 		h.WriteError(w, http.StatusConflict, fmt.Sprintf("user with email %s is exist", user.Email))
-
-		return
-	}
-
-	user.Password, err = utils.HashPassword(user.Password)
-	if err != nil {
-		h.log.Error("failed to hash password", zap.Error(err))
 
 		return
 	}

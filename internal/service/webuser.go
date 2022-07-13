@@ -5,6 +5,7 @@ import (
 
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 	"github.com/VladPetriv/scanner_backend_api/internal/store"
+	"github.com/VladPetriv/scanner_backend_api/pkg/utils"
 )
 
 type WebUserDBService struct {
@@ -25,6 +26,8 @@ func (w *WebUserDBService) GetWebUserByEmail(email string) (*model.WebUser, erro
 }
 
 func (w *WebUserDBService) CreateWebUser(user *model.WebUser) error {
+	user.Password, _ = utils.HashPassword(user.Password)
+
 	_, err := w.store.WebUser.CreateWebUser(user)
 	if err != nil {
 		return fmt.Errorf("[WebUser] srv.CreateWebUser error: %w", err)
