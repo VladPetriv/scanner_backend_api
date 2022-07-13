@@ -10,6 +10,7 @@ import (
 
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
+	"github.com/VladPetriv/scanner_backend_api/pkg/utils"
 )
 
 func (h *Handler) SignUpHandler(w http.ResponseWriter, r *http.Request) {
@@ -74,10 +75,17 @@ func (h *Handler) SignInHandler(w http.ResponseWriter, r *http.Request) {
 		if errors.Is(err, pg.ErrWebUserNotFound) {
 			h.log.Error("failed to get user", zap.String("email", user.Email), zap.Error(err))
 
-			h.WriteError(w, http.StatusInternalServerError, "user not found")
+			h.WriteError(w, http.StatusNotFound, "user not found")
 
 			return
 		}
+	}
+
+	ok := utils.ComparePassword(user.Password, candidate.Password)
+	if !ok {
+		h.WriteError(w, http.StatusUnauthorized, "password is incorrect")
+
+		return
 	}
 
 	token, err := h.service.Jwt.GenerateToken(candidate.Email)
