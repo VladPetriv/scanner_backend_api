@@ -105,9 +105,9 @@ func (h *Handler) GetFullMessagesByChannelIDAndPageHandler(w http.ResponseWriter
 
 	channelID, err := strconv.Atoi(mux.Vars(r)["channel_id"])
 	if err != nil {
-		h.log.Error("get page from query error", zap.Error(err))
+		h.log.Error("get id from query error", zap.Error(err))
 
-		h.WriteError(w, http.StatusBadRequest, "page is not valid")
+		h.WriteError(w, http.StatusBadRequest, "channel id is not valid")
 
 		return
 	}
