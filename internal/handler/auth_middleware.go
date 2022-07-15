@@ -34,7 +34,7 @@ func (h *Handler) AuthenticateMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		r.Header.Set("email", userEmail)
+		w.Header().Set("email", userEmail)
 
 		next.ServeHTTP(w, r)
 	})
