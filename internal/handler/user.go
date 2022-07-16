@@ -11,6 +11,18 @@ import (
 	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 )
 
+// GetUserByIDHandler godoc
+// @ID           get-user-by-id
+// @Summary      GetUserByID
+// @Description  Handler will return user by id from url
+// @Tags         user
+// @Produce      json
+// @Param        id   path      integer        true  "user id"
+// @Success      200  {object}  model.User     "user by id"
+// @Failure      400  {object}  lib.HttpError  "bad request"
+// @Failure      404  {object}  lib.HttpError  "user not found"
+// @Failure      500  {object}  lib.HttpError  "internal server error"
+// @Router       /user/{id} [get]
 func (h *Handler) GetUserByIDHandler(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {

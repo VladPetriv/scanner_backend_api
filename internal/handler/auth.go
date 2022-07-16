@@ -13,6 +13,19 @@ import (
 	"github.com/VladPetriv/scanner_backend_api/pkg/utils"
 )
 
+// SignUpHandler godoc
+// @ID           create-user
+// @Summary      sign-up
+// @Description  Handler will create new user and return message
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        input  body      model.WebUser  true  "user info"
+// @Success      200    {string}  string         "user created"
+// @Failure      400    {object}  lib.HttpError  "bad request"
+// @Failure      409    {object}  lib.HttpError  "user with email is exist"
+// @Failure      500    {object}  lib.HttpError  "internal server error"
+// @Router       /auth/sign-up [post]
 func (h *Handler) SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	user := model.WebUser{}
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -52,6 +65,19 @@ func (h *Handler) SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	h.WriteJSON(w, http.StatusCreated, "user created")
 }
 
+// SignInHandler godoc
+// @ID           login-user
+// @Summary      sigi-up
+// @Description  Handler will login user and return JWT token
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        input  body      model.WebUser  true  "user info"
+// @Success      200    {string}  string         "token"
+// @Failure      400    {object}  lib.HttpError  "bad request"
+// @Failure      404    {object}  lib.HttpError  "user with this email not found"
+// @Failure      500    {object}  lib.HttpError  "internal server error"
+// @Router       /auth/sign-in [post]
 func (h *Handler) SignInHandler(w http.ResponseWriter, r *http.Request) {
 	user := model.WebUser{}
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {

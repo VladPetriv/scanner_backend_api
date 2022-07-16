@@ -11,6 +11,18 @@ import (
 	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 )
 
+// GetFullRepliesByMessageIDHandler godoc
+// @ID           get-full-replies-by-message-id
+// @Summary      GetFullRepliesByMessageID
+// @Description  Handler will return full replies by message id from url
+// @Tags         replie
+// @Produce      json
+// @Param        message_id  path      integer           true  "message id"
+// @Success      200         {array}   model.FullReplie  "replies by message id"
+// @Failure      400         {object}  lib.HttpError     "bad request"
+// @Failure      404         {object}  lib.HttpError     "replies not found"
+// @Failure      500         {object}  lib.HttpError     "internal server error"
+// @Router       /replie/{message_id} [get]
 func (h *Handler) GetFullRepliesByMessageIDHandler(w http.ResponseWriter, r *http.Request) {
 	messageID, err := strconv.Atoi(mux.Vars(r)["message_id"])
 	if err != nil {
