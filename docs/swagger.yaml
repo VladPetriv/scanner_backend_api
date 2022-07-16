@@ -1,0 +1,629 @@
+basePath: /
+definitions:
+  lib.HttpError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      name:
+        type: string
+    type: object
+  model.Channel:
+    properties:
+      id:
+        type: integer
+      imageUrl:
+        type: string
+      name:
+        type: string
+      title:
+        type: string
+    type: object
+  model.FullMessage:
+    properties:
+      channelImageUrl:
+        type: string
+      channelName:
+        type: string
+      channelTitle:
+        type: string
+      id:
+        type: integer
+      messageImageUrl:
+        type: string
+      messageUrl:
+        type: string
+      replies:
+        items:
+          $ref: '#/definitions/model.FullReplie'
+        type: array
+      repliesCount:
+        type: integer
+      title:
+        type: string
+      userFullname:
+        type: string
+      userId:
+        type: integer
+      userImageUrl:
+        type: string
+    type: object
+  model.FullReplie:
+    properties:
+      id:
+        type: integer
+      messageId:
+        type: integer
+      title:
+        type: string
+      userFullname:
+        type: string
+      userId:
+        type: integer
+      userImageUrl:
+        type: string
+    type: object
+  model.Saved:
+    properties:
+      id:
+        type: integer
+      messageId:
+        type: integer
+      userId:
+        type: integer
+    type: object
+  model.User:
+    properties:
+      fullname:
+        type: string
+      id:
+        type: integer
+      imageUrl:
+        type: string
+      username:
+        type: string
+    type: object
+  model.WebUser:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: Back-End side for telegram scanner
+  title: Scanner Back-End API
+  version: "1.0"
+paths:
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Handler will login user and return JWT token
+      operationId: login-user
+      parameters:
+      - description: user info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.WebUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: token
+          schema:
+            type: string
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: user with this email not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: sigi-up
+      tags:
+      - auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Handler will create new user and return message
+      operationId: create-user
+      parameters:
+      - description: user info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.WebUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user created
+          schema:
+            type: string
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "409":
+          description: user with email is exist
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: sign-up
+      tags:
+      - auth
+  /channel/:
+    get:
+      description: Handler will return channels by page from query
+      operationId: get-channels-by-page
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: channels by page
+          schema:
+            items:
+              $ref: '#/definitions/model.Channel'
+            type: array
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: channels not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetChannelsByPage
+      tags:
+      - channel
+  /channel/{name}:
+    get:
+      description: Handler will return channel by name from url
+      operationId: get-channel-by-name
+      parameters:
+      - description: channel name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: channel by name
+          schema:
+            $ref: '#/definitions/model.Channel'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: channel not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetChannelByName
+      tags:
+      - channel
+  /channel/count:
+    get:
+      description: Handler will return channels count
+      operationId: get-channels-count
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: channels count
+          schema:
+            type: object
+        "404":
+          description: channels count not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetChannelsCount
+      tags:
+      - channel
+  /message/:
+    get:
+      description: Handler will return full messages by page from query
+      operationId: get-full-messages-by-page
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: full messages by page
+          schema:
+            items:
+              $ref: '#/definitions/model.FullMessage'
+            type: array
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: full messages not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetFullMessagesByPage
+      tags:
+      - message
+  /message/{message_id}:
+    get:
+      description: Handler will return full message by id from url
+      operationId: get-full-message-by-id
+      parameters:
+      - description: message id
+        in: path
+        name: message_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: full message by user id
+          schema:
+            $ref: '#/definitions/model.FullMessage'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: full messages not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetFullMessageByID
+      tags:
+      - message
+  /message/channel/{channel_id}:
+    get:
+      description: Handler will return full messages by page from query and channel
+        id from url
+      operationId: get-full-messages-by-page-and-channel-id
+      parameters:
+      - description: channel id
+        in: path
+        name: channel_id
+        required: true
+        type: integer
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: full messages by page and channel id
+          schema:
+            items:
+              $ref: '#/definitions/model.FullMessage'
+            type: array
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: full messages not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetFullMessagesByChannelIDAndPage
+      tags:
+      - message
+  /message/count:
+    get:
+      description: Handler will return messages count
+      operationId: get-messages-count
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: messages count
+          schema:
+            type: object
+        "404":
+          description: messages count not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetMessagesCount
+      tags:
+      - message
+  /message/count/{channel_id}:
+    get:
+      description: Handler will return messages count by channel id from url
+      operationId: get-messages-by-channel-id-count
+      parameters:
+      - description: channel id
+        in: path
+        name: channel_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: messages count
+          schema:
+            type: object
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: messages count not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetMessagesByChannelIDCount
+      tags:
+      - message
+  /message/user/{user_id}:
+    get:
+      description: Handler will return full messages by user id from url
+      operationId: get-full-messages-by-user-id
+      parameters:
+      - description: user id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: full messages by user id
+          schema:
+            items:
+              $ref: '#/definitions/model.FullMessage'
+            type: array
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: full messages not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetFullMessagesByUserID
+      tags:
+      - message
+  /replie/{message_id}:
+    get:
+      description: Handler will return full replies by message id from url
+      operationId: get-full-replies-by-message-id
+      parameters:
+      - description: message id
+        in: path
+        name: message_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: replies by message id
+          schema:
+            items:
+              $ref: '#/definitions/model.FullReplie'
+            type: array
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: replies not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetFullRepliesByMessageID
+      tags:
+      - replie
+  /saved/{user_id}:
+    get:
+      description: Handler will return saved messages by user id from url
+      operationId: get-saved-messages
+      parameters:
+      - description: user id
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: saved by user id
+          schema:
+            items:
+              $ref: '#/definitions/model.Saved'
+            type: array
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: saved messages not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      security:
+      - ApiKeyAuth: []
+      summary: GetSavedMessages
+      tags:
+      - saved
+  /saved/create:
+    post:
+      consumes:
+      - application/json
+      description: Handler will create saved message and return message
+      operationId: create-saved-message
+      parameters:
+      - description: saved message info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.Saved'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: saved message created
+          schema:
+            type: string
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      security:
+      - ApiKeyAuth: []
+      summary: CreateSavedMessage
+      tags:
+      - saved
+  /saved/delete/{message_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Handler will delete saved message by id from url
+      operationId: delete-saved-message
+      parameters:
+      - description: saved message id
+        in: path
+        name: message_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: saved message deleted
+          schema:
+            type: string
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      security:
+      - ApiKeyAuth: []
+      summary: DeleteSavedMessage
+      tags:
+      - saved
+  /user/{id}:
+    get:
+      description: Handler will return user by id from url
+      operationId: get-user-by-id
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user by id
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "404":
+          description: user not found
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+        "500":
+          description: internal server error
+          schema:
+            $ref: '#/definitions/lib.HttpError'
+      summary: GetUserByID
+      tags:
+      - user
+produces:
+- application/json
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
