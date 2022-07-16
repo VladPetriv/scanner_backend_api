@@ -11,8 +11,18 @@ import (
 	"github.com/VladPetriv/scanner_backend_api/pkg/logger"
 )
 
-func main() {
+// @title        Scanner Back-End API
+// @version      1.0
+// @description  Back-End side for telegram scanner
+// @produce      json
 
+// @host      localhost:3000
+// @BasePath  /
+
+// @securityDefinitions.apikey  ApiKeyAuth
+// @in                          header
+// @name                        Authorization
+func main() {
 	cfg, err := config.Get()
 	if err != nil {
 		panic(err)

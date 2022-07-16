@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
+	_ "github.com/VladPetriv/scanner_backend_api/docs"
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"go.uber.org/zap"
 
 	"github.com/VladPetriv/scanner_backend_api/internal/service"
@@ -56,6 +58,13 @@ func (h *Handler) InitRoutes() *mux.Router {
 	saved.HandleFunc("/{user_id}", h.GetSavedMessagesHandler).Methods(http.MethodGet)
 	saved.HandleFunc("/create", h.CreateSavedMessageHandler).Methods(http.MethodPost)
 	saved.HandleFunc("/delete/{message_id}", h.DeleteSavedMessageHandler).Methods(http.MethodDelete)
+
+	router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:3000/swagger/doc.json"),
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+	)).Methods(http.MethodGet)
 
 	h.logAllRoutes(router)
 
