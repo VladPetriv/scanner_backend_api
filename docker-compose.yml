@@ -1,31 +1,26 @@
-version: '1.0'
+version: '3.8'
 
 services:
   scanner_backend-api:
     container_name: main
+    build: ./ 
+    command: ./server
     env_file:
       - ./configs/.config.env 
-    build: 
-      context: .
-    command: ./wait-for-postgres.sh db ./server
     ports:
       - 3000:3000
-      - 8080:8080
-      - 9229:9229
     depends_on: 
-      - postgres
+      - db
     restart: always
-  
-  postgres:
-    container_name: postgres
-    image: postgres:14 
+    
+  db:
+    image: postgres:latest 
     env_file:
       - ./configs/.config.env
     environment:
-      -PG-DATA: /var/lib/postgresql/data   
-      -POSTGRES-PASSWORD: postgres
+      - PG-DATA=/var/lib/postgresql/data   
     ports:
-      - 5432:5432
+      - 5436:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: always
