@@ -5,6 +5,7 @@ import (
 
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 	"github.com/VladPetriv/scanner_backend_api/internal/store"
+	"github.com/VladPetriv/scanner_backend_api/pkg/utils"
 )
 
 type MessageDBService struct {
@@ -34,16 +35,7 @@ func (m *MessageDBService) GetMessagesCountByChannelID(ID int) (int, error) {
 }
 
 func (m *MessageDBService) GetFullMessagesByPage(page int) ([]model.FullMessage, error) {
-	if page == 0 || page == 1 {
-		page = 0
-	} else if page == 2 {
-		page = 10
-	} else {
-		page *= 10
-		page -= 10
-	}
-
-	messages, err := m.store.Message.GetFullMessagesByPage(page)
+	messages, err := m.store.Message.GetFullMessagesByPage(utils.FormatPage(page))
 	if err != nil {
 		return nil, fmt.Errorf("[Message] srv.GetFullMessagesByPage error: %w", err)
 	}
@@ -52,16 +44,7 @@ func (m *MessageDBService) GetFullMessagesByPage(page int) ([]model.FullMessage,
 }
 
 func (m *MessageDBService) GetFullMessagesByChannelIDAndPage(ID, page int) ([]model.FullMessage, error) {
-	if page == 0 || page == 1 {
-		page = 0
-	} else if page == 2 {
-		page = 10
-	} else {
-		page *= 10
-		page -= 10
-	}
-
-	messages, err := m.store.Message.GetFullMessagesByChannelIDAndPage(ID, page)
+	messages, err := m.store.Message.GetFullMessagesByChannelIDAndPage(ID, utils.FormatPage(page))
 	if err != nil {
 		return nil, fmt.Errorf("[Message] srv.GetFullMessagesByChannelIDAndPage error: %w", err)
 	}

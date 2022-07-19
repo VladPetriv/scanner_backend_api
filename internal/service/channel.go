@@ -5,6 +5,7 @@ import (
 
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 	"github.com/VladPetriv/scanner_backend_api/internal/store"
+	"github.com/VladPetriv/scanner_backend_api/pkg/utils"
 )
 
 type ChannelDBService struct {
@@ -25,16 +26,7 @@ func (c *ChannelDBService) GetChannelsCount() (int, error) {
 }
 
 func (c *ChannelDBService) GetChannelsByPage(page int) ([]model.Channel, error) {
-	if page == 0 || page == 1 {
-		page = 0
-	} else if page == 2 {
-		page = 10
-	} else {
-		page *= 10
-		page -= 10
-	}
-
-	channels, err := c.store.Channel.GetChannelsByPage(page)
+	channels, err := c.store.Channel.GetChannelsByPage(utils.FormatPage(page))
 	if err != nil {
 		return nil, fmt.Errorf("[Channel] srv.GetChannelsByPage error: %w", err)
 	}
