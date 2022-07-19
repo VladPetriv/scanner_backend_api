@@ -13,7 +13,7 @@ var (
 )
 
 type tokenClaims struct {
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 	UserEmail string
 }
 
@@ -27,9 +27,9 @@ func NewJwtService(key string) *JwtDBService {
 
 func (j *JwtDBService) GenerateToken(email string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
-		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(12 * time.Hour).Unix(),
-			IssuedAt:  time.Now().Unix(),
+		jwt.RegisteredClaims{
+			ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(12 * time.Hour)},
+			IssuedAt:  &jwt.NumericDate{Time: time.Now()},
 		},
 		email,
 	})
