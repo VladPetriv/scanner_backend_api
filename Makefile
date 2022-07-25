@@ -25,4 +25,5 @@ migrate_up:
 migrate_down:
 	migrate -path ./db/migrations -database $(DATABASE_URL) -verbose down
 
-
+.PHONY: docker
+	docker-compose up --build

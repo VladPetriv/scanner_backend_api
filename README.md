@@ -15,11 +15,11 @@ Go, PostgreSQL, Gorilla-Mux, Zap, Go-Sqlmock, Testify, Golang-Migrate, JWT, Swag
 ## Installation
 
 ```bash
- $ git clone git@github.com:VladPetriv/scanner_backend_api.git
+ git clone git@github.com:VladPetriv/scanner_backend_api.git
 
- $ cd scanner_backend_api
+ cd scanner_backend_api
 
- $ go mod download
+ go mod download
 
 ```
 
@@ -35,18 +35,24 @@ Please create .env file with this fields:
 
 ## Usage
 
+Start with docker-compose:
+
+```bash
+ make docker
+```
+
 Start an application locally:
 
 ```bash
- $ make run # Or you can use go run ./cmd/main.go
+ make run # Or you can use go run ./cmd/main.go
 ```
 
-Running test suite
+Running test suite:
 
 ```bash
- $ make mock # Run it if mocks folder is not exist
+ make mock # Run it if mocks folder is not exist
 
- $ make test
+ make test
 ```
 
 Watch demo version with UI:
