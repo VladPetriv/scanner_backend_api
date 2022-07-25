@@ -799,144 +799,186 @@
     },
     "definitions": {
         "lib.HttpError": {
+            "description": "Http Error structure",
             "type": "object",
             "properties": {
                 "code": {
+                    "description": "Http status code",
                     "type": "integer"
                 },
                 "message": {
+                    "description": "Error message",
                     "type": "string"
                 },
                 "name": {
+                    "description": "Http status name",
                     "type": "string"
                 }
             }
         },
         "model.Channel": {
+            "description": "Channel model",
             "type": "object",
             "properties": {
                 "id": {
+                    "description": "channel id example: 1",
                     "type": "integer"
                 },
                 "imageUrl": {
+                    "description": "channel image url from firebase",
                     "type": "string"
                 },
                 "name": {
+                    "description": "channel name example: go_go",
                     "type": "string"
                 },
                 "title": {
+                    "description": "channel title example: GO ukrainian community",
                     "type": "string"
                 }
             }
         },
         "model.FullMessage": {
+            "description": "Full message model includes all info about message",
             "type": "object",
             "properties": {
                 "channelImageUrl": {
+                    "description": "Channel image url from firebase",
                     "type": "string"
                 },
                 "channelName": {
+                    "description": "Channel name example: go_go",
                     "type": "string"
                 },
                 "channelTitle": {
+                    "description": "Channel title example: GO ukrainian community",
                     "type": "string"
                 },
                 "id": {
+                    "description": "Message id example: 1",
                     "type": "integer"
                 },
                 "messageImageUrl": {
+                    "description": "Message image url from firebase",
                     "type": "string"
                 },
                 "messageUrl": {
+                    "description": "Message url from telegram",
                     "type": "string"
                 },
                 "replies": {
+                    "description": "Replies",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.FullReplie"
                     }
                 },
                 "repliesCount": {
+                    "description": "Replies count example: 50",
                     "type": "integer"
                 },
                 "title": {
+                    "description": "Message title example: Hello, anyone works with Golang?",
                     "type": "string"
                 },
                 "userFullname": {
+                    "description": "User fullname example: Ivan Petrovich",
                     "type": "string"
                 },
                 "userId": {
+                    "description": "User id example: 1",
                     "type": "integer"
                 },
                 "userImageUrl": {
+                    "description": "User image url from firebase",
                     "type": "string"
                 }
             }
         },
         "model.FullReplie": {
+            "description": "Full replie model includes all info about replie",
             "type": "object",
             "properties": {
                 "id": {
+                    "description": "Replies id example: 1",
                     "type": "integer"
                 },
                 "messageId": {
+                    "description": "Replie message id example: 1",
                     "type": "integer"
                 },
                 "title": {
+                    "description": "Replie title example: Yes",
                     "type": "string"
                 },
                 "userFullname": {
+                    "description": "Replie user fullname example: Ivan Petrovich",
                     "type": "string"
                 },
                 "userId": {
+                    "description": "Replie user id example: 1",
                     "type": "integer"
                 },
                 "userImageUrl": {
+                    "description": "Replie user image url from firebase",
                     "type": "string"
                 }
             }
         },
         "model.Saved": {
+            "description": "Saved message model",
             "type": "object",
             "properties": {
                 "id": {
+                    "description": "Saved id example: 1",
                     "type": "integer"
                 },
                 "messageId": {
+                    "description": "Saved message id example: 1",
                     "type": "integer"
                 },
                 "userId": {
+                    "description": "Saved user id example: 1",
                     "type": "integer"
                 }
             }
         },
         "model.User": {
+            "description": "Telegram user model",
             "type": "object",
             "properties": {
                 "fullname": {
+                    "description": "User fullname example Ivan Petrovich",
                     "type": "string"
                 },
                 "id": {
+                    "description": "User id example: 1",
                     "type": "integer"
                 },
                 "imageUrl": {
+                    "description": "User image url from firebase",
                     "type": "string"
                 },
                 "username": {
+                    "description": "User username example: ivanptr21",
                     "type": "string"
                 }
             }
         },
         "model.WebUser": {
+            "description": "User model",
             "type": "object",
             "properties": {
                 "email": {
+                    "description": "User email example: test@test.com",
                     "type": "string"
                 },
                 "id": {
+                    "description": "User id example: 1",
                     "type": "integer"
                 },
                 "password": {
+                    "description": "user Password example: d1e8a70b5ccab1dc2f56bbf7e99f064a660c08e361a35751b9c483c88943d082",
                     "type": "string"
                 }
             }
