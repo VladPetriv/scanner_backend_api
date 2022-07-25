@@ -100,11 +100,11 @@ func (h *Handler) WriteJSON(w http.ResponseWriter, httpCode int, data interface{
 func (h *Handler) WriteError(w http.ResponseWriter, httpCode int, err string) {
 	w.WriteHeader(httpCode)
 
-	if err != "" {
-		json.NewEncoder(w).Encode(lib.HttpError{
-			Code:    httpCode,
-			Name:    http.StatusText(httpCode),
-			Message: err,
-		})
-	}
+	data, _ := json.Marshal(lib.HttpError{
+		Code:    httpCode,
+		Name:    http.StatusText(httpCode),
+		Message: err,
+	})
+
+	http.Error(w, string(data), httpCode)
 }
