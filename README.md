@@ -54,7 +54,3 @@ Running test suite:
 
  make test
 ```
-
-Watch demo version with UI:
-
-[Telegram Overflow](https://telegram-overflow.herokuapp.com/)
