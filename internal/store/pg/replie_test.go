@@ -34,14 +34,14 @@ func Test_GetFullRepliesByMessageID(t *testing.T) {
 		{
 			name: "Ok: [full replies found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id", "title", "messageid", "userid", "fullname", "imageurl"}).
-					AddRow(1, "test1", 1, 1, "test1 test1", "test1.jpg").
-					AddRow(2, "test2", 1, 2, "test2 test2", "test2.jpg")
+				rows := sqlmock.NewRows([]string{"id", "title", "message_id", "imageurl", "userid", "fullname", "userimageurl"}).
+					AddRow(1, "test1", 1, "test1r.jpg", 1, "test1 test1", "test1.jpg").
+					AddRow(2, "test2", 1, "test2r.jpg", 2, "test2 test2", "test2.jpg")
 
 				mock.ExpectQuery(
 					`SELECT
-					r.id, r.title, r.message_id as messageId,
-					u.id as userId, u.fullname, u.imageurl 	
+					r.id, r.title, r.message_id, r.imageurl, 
+					u.id as userId, u.fullname, u.imageurl AS userimageurl 	
 					FROM replie r 
 					LEFT JOIN tg_user u ON u.id = r.user_id
 					WHERE r.message_id = $1
@@ -50,19 +50,19 @@ func Test_GetFullRepliesByMessageID(t *testing.T) {
 			},
 			input: 1,
 			want: []model.FullReplie{
-				{ID: 1, Title: "test1", MessageID: 1, UserID: 1, UserFullname: "test1 test1", UserImageURL: "test1.jpg"},
-				{ID: 2, Title: "test2", MessageID: 1, UserID: 2, UserFullname: "test2 test2", UserImageURL: "test2.jpg"},
+				{ID: 1, Title: "test1", MessageID: 1, ImageURL: "test1r.jpg", UserID: 1, UserFullname: "test1 test1", UserImageURL: "test1.jpg"},
+				{ID: 2, Title: "test2", MessageID: 1, ImageURL: "test2r.jpg", UserID: 2, UserFullname: "test2 test2", UserImageURL: "test2.jpg"},
 			},
 		},
 		{
 			name: "Error: [full replies not found]",
 			mock: func() {
-				rows := sqlmock.NewRows([]string{"id", "title", "messageid", "userid", "fullname", "imageurl"})
+				rows := sqlmock.NewRows([]string{"id", "title", "message_id", "imageurl", "userid", "fullname", "userimageurl"})
 
 				mock.ExpectQuery(
 					`SELECT
-					r.id, r.title, r.message_id as messageId,
-					u.id as userId, u.fullname, u.imageurl 	
+					r.id, r.title, r.message_id, r.imageurl,
+					u.id as userId, u.fullname, u.imageurl AS userimageurl	
 					FROM replie r 
 					LEFT JOIN tg_user u ON u.id = r.user_id
 					WHERE r.message_id = $1
@@ -78,8 +78,8 @@ func Test_GetFullRepliesByMessageID(t *testing.T) {
 			mock: func() {
 				mock.ExpectQuery(
 					`SELECT
-					r.id, r.title, r.message_id as messageId,
-					u.id as userId, u.fullname, u.imageurl 	
+					r.id, r.title, r.message_id, r.imageurl,
+					u.id as userId, u.fullname, u.imageurl AS userimageurl 	
 					FROM replie r 
 					LEFT JOIN tg_user u ON u.id = r.user_id
 					WHERE r.message_id = $1
