@@ -7,3 +7,9 @@ type Channel struct {
 	Title    string `json:"title"`    // channel title example: GO ukrainian community
 	ImageURL string `json:"imageUrl"` // channel image url from firebase
 }
+
+type ChannelDTO struct {
+	Name     string `json:"Username" db:"name"`
+	Title    string `json:"Title" db:"title"`
+	ImageURL string `json:"ImageURL" db:"imageurl"`
+}

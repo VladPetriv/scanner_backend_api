@@ -10,3 +10,10 @@ type FullReplie struct {
 	UserFullname string `json:"userFullname" db:"fullname"`     // Replie user fullname example: Ivan Petrovich
 	UserImageURL string `json:"userImageUrl" db:"userimageurl"` // Replie user image url from firebase
 }
+
+type ReplieDTO struct {
+	MessageID int    `db:"message_id"`
+	UserID    int    `db:"user_id"`
+	Title     string `db:"title"`
+	ImageURL  string `db:"imageurl"`
+}

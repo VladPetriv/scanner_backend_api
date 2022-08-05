@@ -18,3 +18,11 @@ type FullMessage struct {
 	RepliesCount int          `json:"repliesCount" db:"count"` // Replies count example: 50
 	Replies      []FullReplie `json:"replies"`                 // Replies
 }
+
+type MessageDTO struct {
+	ChannelID  int    `db:"channel_id"`
+	UserID     int    `db:"user_id"`
+	Title      string `db:"title"`
+	MessageURL string `db:"message_url"`
+	ImageURL   string `db:"imageurl"`
+}

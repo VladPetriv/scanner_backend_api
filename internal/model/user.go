@@ -14,3 +14,9 @@ type WebUser struct {
 	Email    string `json:"email"`    // User email example: test@test.com
 	Password string `json:"password"` // user Password example: d1e8a70b5ccab1dc2f56bbf7e99f064a660c08e361a35751b9c483c88943d082
 }
+
+type UserDTO struct {
+	Username string `db:"username"`
+	Fullname string `db:"fullname"`
+	ImageURL string `db:"imageurl"`
+}
