@@ -23,8 +23,8 @@ func (r *ReplieRepo) GetFullRepliesByMessageID(ID int) ([]model.FullReplie, erro
 	err := r.db.Select(
 		&replies,
 		`SELECT
-		r.id, r.title, r.message_id as messageId,
-		u.id as userId, u.fullname, u.imageurl 	
+		r.id, r.title, r.message_id, r.imageurl,
+		u.id as userId, u.fullname, u.imageurl AS userimageurl
 		FROM replie r 
 		LEFT JOIN tg_user u ON u.id = r.user_id
 		WHERE r.message_id = $1
