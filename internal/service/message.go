@@ -16,6 +16,15 @@ func NewMessageService(store *store.Store) *MessageDBService {
 	return &MessageDBService{store: store}
 }
 
+func (m *MessageDBService) CreateMessage(message *model.MessageDTO) (int, error) {
+	id, err := m.store.Message.CreateMessage(message)
+	if err != nil {
+		return 0, fmt.Errorf("[Message] srv.CreateMessage error: %w", err)
+	}
+
+	return id, nil
+}
+
 func (m *MessageDBService) GetMessagesCount() (int, error) {
 	count, err := m.store.Message.GetMessagesCount()
 	if err != nil {
