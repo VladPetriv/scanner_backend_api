@@ -10,6 +10,20 @@ type ReplieRepo struct {
 	mock.Mock
 }
 
+// CreateReplie provides a mock function with given fields: replie
+func (_m *ReplieRepo) CreateReplie(replie *model.ReplieDTO) error {
+	ret := _m.Called(replie)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*model.ReplieDTO) error); ok {
+		r0 = rf(replie)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // GetFullRepliesByMessageID provides a mock function with given fields: ID
 func (_m *ReplieRepo) GetFullRepliesByMessageID(ID int) ([]model.FullReplie, error) {
 	ret := _m.Called(ID)
