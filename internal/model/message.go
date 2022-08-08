@@ -26,3 +26,33 @@ type MessageDTO struct {
 	MessageURL string `db:"message_url"`
 	ImageURL   string `db:"imageurl"`
 }
+
+type TgMessage struct {
+	Message    string `json:"Message"`
+	MessageURL string `json:"MessageURL"`
+	ImageURL   string `json:"ImageURL"`
+
+	FromID struct {
+		Username string `json:"Username"`
+		ImageURL string `json:"ImageURL"`
+		Fullname string `json:"Fullname"`
+	} `json:"FromID"`
+
+	PeerID struct {
+		Username string `json:"Username"`
+	} `json:"PeerID"`
+
+	Replies struct {
+		Count    int `json:"Count"`
+		Messages []struct {
+			FromID struct {
+				Username string `json:"Username"`
+				Fullname string `json:"Fullname"`
+				ImageURL string `json:"ImageURL"`
+			} `json:"FromID"`
+
+			Message  string `json:"Message"`
+			ImageURL string `json:"ImageURL"`
+		} `json:"Messages"`
+	} `json:"Replies"`
+}
