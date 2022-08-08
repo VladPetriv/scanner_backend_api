@@ -10,6 +10,20 @@ type ChannelService struct {
 	mock.Mock
 }
 
+// CreateChannel provides a mock function with given fields: channel
+func (_m *ChannelService) CreateChannel(channel *model.ChannelDTO) error {
+	ret := _m.Called(channel)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*model.ChannelDTO) error); ok {
+		r0 = rf(channel)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // GetChannelByName provides a mock function with given fields: name
 func (_m *ChannelService) GetChannelByName(name string) (*model.Channel, error) {
 	ret := _m.Called(name)

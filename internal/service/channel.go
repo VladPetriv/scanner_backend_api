@@ -16,6 +16,15 @@ func NewChannelService(store *store.Store) *ChannelDBService {
 	return &ChannelDBService{store: store}
 }
 
+func (c *ChannelDBService) CreateChannel(channel *model.ChannelDTO) error {
+	err := c.store.Channel.CreateChannel(channel)
+	if err != nil {
+		return fmt.Errorf("[Channel] srv.CreateChannel error: %w", err)
+	}
+
+	return nil
+}
+
 func (c *ChannelDBService) GetChannelsCount() (int, error) {
 	count, err := c.store.Channel.GetChannelsCount()
 	if err != nil {

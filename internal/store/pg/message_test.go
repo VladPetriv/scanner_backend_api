@@ -14,6 +14,77 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Test_CreateMessage(t *testing.T) {
+	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+
+	defer db.Close()
+
+	sqlxDB := sqlx.NewDb(db, "postgres")
+
+	r := pg.NewMessageRepo(&pg.DB{DB: sqlxDB})
+
+	tests := []struct {
+		name           string
+		mock           func()
+		input          *model.MessageDTO
+		want           int
+		wantErr        bool
+		expectedErrMsg string
+	}{
+		{
+			name: "Ok: [message created]",
+			mock: func() {
+				rows := sqlmock.NewRows([]string{"id"}).
+					AddRow(1)
+
+				mock.ExpectQuery("INSERT INTO message(channel_id, user_id, title, message_url, imageurl) VALUES ($1, $2, $3, $4, $5) RETURNING id;").WithArgs(1, 1, "test", "test.url", "test.jpg").WillReturnRows(rows)
+			},
+			input: &model.MessageDTO{ChannelID: 1, UserID: 1, Title: "test", MessageURL: "test.url", ImageURL: "test.jpg"},
+			want:  1,
+		},
+		{
+			name: "Error: [message not created]",
+			mock: func() {
+				rows := sqlmock.NewRows([]string{"id"})
+
+				mock.ExpectQuery("INSERT INTO message(channel_id, user_id, title, message_url, imageurl) VALUES ($1, $2, $3, $4, $5) RETURNING id;").WithArgs(1, 1, "test", "test.url", "test.jpg").WillReturnRows(rows)
+			},
+			input:          &model.MessageDTO{ChannelID: 1, UserID: 1, Title: "test", MessageURL: "test.url", ImageURL: "test.jpg"},
+			wantErr:        true,
+			expectedErrMsg: "message not created",
+		},
+		{
+			name: "Error: [some sql error]",
+			mock: func() {
+				mock.ExpectQuery("INSERT INTO message(channel_id, user_id, title, message_url, imageurl) VALUES ($1, $2, $3, $4, $5) RETURNING id;").WithArgs(1, 1, "test", "test.url", "test.jpg").WillReturnError(fmt.Errorf("some error"))
+			},
+			input:          &model.MessageDTO{ChannelID: 1, UserID: 1, Title: "test", MessageURL: "test.url", ImageURL: "test.jpg"},
+			wantErr:        true,
+			expectedErrMsg: "failed to create message: some error",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+
+			got, err := r.CreateMessage(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
+			} else {
+				assert.NoError(t, err)
+				assert.EqualValues(t, tt.want, got)
+			}
+
+			assert.NoError(t, mock.ExpectationsWereMet())
+		})
+	}
+}
+
 func Test_GetMessagesCount(t *testing.T) {
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {

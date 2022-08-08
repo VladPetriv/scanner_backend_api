@@ -12,6 +12,62 @@ import (
 	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 )
 
+func Test_CreateChannel(t *testing.T) {
+	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+
+	defer db.Close()
+
+	sqlxDB := sqlx.NewDb(db, "postgres")
+
+	r := pg.NewChannelRepo(&pg.DB{DB: sqlxDB})
+
+	tests := []struct {
+		name           string
+		mock           func()
+		input          *model.ChannelDTO
+		wantErr        bool
+		expectedErrMsg string
+	}{
+		{
+			name: "Ok: [channel created]",
+			mock: func() {
+				mock.ExpectExec("INSERT INTO channel(name, title, imageurl) VALUES ($1, $2, $3);").
+					WithArgs("test", "test T", "test.jpg").WillReturnResult(sqlmock.NewResult(0, 1))
+			},
+			input: &model.ChannelDTO{Name: "test", Title: "test T", ImageURL: "test.jpg"},
+		},
+		{
+			name: "Error: [some sql error]",
+			mock: func() {
+				mock.ExpectExec("INSERT INTO channel(name, title, imageurl) VALUES ($1, $2, $3);").
+					WithArgs("test", "test T", "test.jpg").WillReturnError(fmt.Errorf("some error"))
+			},
+			input:          &model.ChannelDTO{Name: "test", Title: "test T", ImageURL: "test.jpg"},
+			wantErr:        true,
+			expectedErrMsg: "failed to create channel: some error",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+
+			err := r.CreateChannel(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
+			} else {
+				assert.NoError(t, err)
+			}
+
+			assert.NoError(t, mock.ExpectationsWereMet())
+		})
+	}
+}
+
 func Test_GetChannelsCount(t *testing.T) {
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {

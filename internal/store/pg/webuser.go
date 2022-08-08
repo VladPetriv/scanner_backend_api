@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	ErrWebUserNotFound = errors.New("web user not found")
-	ErrUserNotCreated  = errors.New("web user not created")
+	ErrWebUserNotFound   = errors.New("web user not found")
+	ErrWebUserNotCreated = errors.New("web user not created")
 )
 
 type WebUserRepo struct {
@@ -43,7 +43,7 @@ func (w *WebUserRepo) CreateWebUser(user *model.WebUser) (int, error) {
 
 	if err := row.Scan(&id); err != nil {
 		if err == sql.ErrNoRows {
-			return 0, ErrUserNotCreated
+			return 0, ErrWebUserNotCreated
 		}
 
 		return 0, fmt.Errorf("failed to create web user:%w", err)

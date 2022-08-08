@@ -11,6 +11,62 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Test_CreateReplie(t *testing.T) {
+	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+
+	defer db.Close()
+
+	sqlxDB := sqlx.NewDb(db, "postgres")
+
+	r := pg.NewReplieRepo(&pg.DB{DB: sqlxDB})
+
+	tests := []struct {
+		name           string
+		mock           func()
+		input          *model.ReplieDTO
+		wantErr        bool
+		expectedErrMsg string
+	}{
+		{
+			name: "Ok: [replie created]",
+			mock: func() {
+				mock.ExpectExec("INSERT INTO replie(message_id, user_id, title, imageurl) VALUES ($1, $2, $3, $4);").
+					WithArgs(1, 1, "test", "test.jpg").WillReturnResult(sqlmock.NewResult(0, 1))
+			},
+			input: &model.ReplieDTO{MessageID: 1, UserID: 1, Title: "test", ImageURL: "test.jpg"},
+		},
+		{
+			name: "Error: [some sql error]",
+			mock: func() {
+				mock.ExpectExec("INSERT INTO replie(message_id, user_id, title, imageurl) VALUES ($1, $2, $3, $4);").
+					WithArgs(1, 1, "test", "test.jpg").WillReturnError(fmt.Errorf("some error"))
+			},
+			input:          &model.ReplieDTO{MessageID: 1, UserID: 1, Title: "test", ImageURL: "test.jpg"},
+			wantErr:        true,
+			expectedErrMsg: "failed to create replie: some error",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.mock()
+
+			err := r.CreateReplie(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
+			} else {
+				assert.NoError(t, err)
+			}
+
+			assert.NoError(t, mock.ExpectationsWereMet())
+		})
+	}
+}
+
 func Test_GetFullRepliesByMessageID(t *testing.T) {
 	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {

@@ -8,11 +8,71 @@ import (
 	"github.com/VladPetriv/scanner_backend_api/internal/service"
 	"github.com/VladPetriv/scanner_backend_api/internal/store"
 	"github.com/VladPetriv/scanner_backend_api/internal/store/mocks"
+	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_GetMessagesCount(t *testing.T) {
+func Test_CreateMessage(t *testing.T) {
+	messageInput := &model.MessageDTO{ChannelID: 1, UserID: 1, Title: "test", MessageURL: "test.url", ImageURL: "test.jpg"}
 
+	tests := []struct {
+		name           string
+		mock           func(messageRepo *mocks.MessageRepo)
+		input          *model.MessageDTO
+		want           int
+		wantErr        bool
+		expectedErrMsg string
+	}{
+		{
+			name: "Ok: [message created]",
+			mock: func(messageRepo *mocks.MessageRepo) {
+				messageRepo.On("CreateMessage", messageInput).Return(1, nil)
+			},
+			input: messageInput,
+			want:  1,
+		},
+		{
+			name: "Error: [message not created]",
+			mock: func(messageRepo *mocks.MessageRepo) {
+				messageRepo.On("CreateMessage", messageInput).Return(0, pg.ErrMessageNotCreated)
+			},
+			input:          messageInput,
+			wantErr:        true,
+			expectedErrMsg: "[Message] srv.CreateMessage error: message not created",
+		},
+		{
+			name: "Error: [some store error]",
+			mock: func(messageRepo *mocks.MessageRepo) {
+				messageRepo.On("CreateMessage", messageInput).Return(0, fmt.Errorf("failed to create message: some error"))
+			},
+			input:          messageInput,
+			wantErr:        true,
+			expectedErrMsg: "[Message] srv.CreateMessage error: failed to create message: some error",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			messageRepo := &mocks.MessageRepo{}
+			srv := service.NewMessageService(&store.Store{Message: messageRepo})
+
+			tt.mock(messageRepo)
+
+			got, err := srv.CreateMessage(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
+			} else {
+				assert.NoError(t, err)
+				assert.EqualValues(t, tt.want, got)
+			}
+
+			messageRepo.AssertExpectations(t)
+		})
+	}
+}
+
+func Test_GetMessagesCount(t *testing.T) {
 	tests := []struct {
 		name           string
 		mock           func(messageRepo *mocks.MessageRepo)

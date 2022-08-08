@@ -17,6 +17,18 @@ func NewReplieRepo(db *DB) *ReplieRepo {
 	return &ReplieRepo{db: db}
 }
 
+func (r *ReplieRepo) CreateReplie(replie *model.ReplieDTO) error {
+	_, err := r.db.Exec(
+		"INSERT INTO replie(message_id, user_id, title, imageurl) VALUES ($1, $2, $3, $4);",
+		replie.MessageID, replie.UserID, replie.Title, replie.ImageURL,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to create replie: %w", err)
+	}
+
+	return nil
+}
+
 func (r *ReplieRepo) GetFullRepliesByMessageID(ID int) ([]model.FullReplie, error) {
 	replies := make([]model.FullReplie, 0, 10)
 
