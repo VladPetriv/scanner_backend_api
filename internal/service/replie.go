@@ -15,6 +15,15 @@ func NewReplieService(store *store.Store) *ReplieDBService {
 	return &ReplieDBService{store: store}
 }
 
+func (r *ReplieDBService) CreateReplie(replie *model.ReplieDTO) error {
+	err := r.store.Replie.CreateReplie(replie)
+	if err != nil {
+		return fmt.Errorf("[Replie] srv.CreateReplie error: %w", err)
+	}
+
+	return nil
+}
+
 func (r *ReplieDBService) GetFullRepliesByMessageID(ID int) ([]model.FullReplie, error) {
 	replies, err := r.store.Replie.GetFullRepliesByMessageID(ID)
 	if err != nil {

@@ -4,6 +4,7 @@ import "github.com/VladPetriv/scanner_backend_api/internal/model"
 
 //go:generate mockery --dir . --name ChannelService --output ./mocks
 type ChannelService interface {
+	CreateChannel(channel *model.ChannelDTO) error
 	GetChannelsCount() (int, error)
 	GetChannelsByPage(page int) ([]model.Channel, error)
 	GetChannelByName(name string) (*model.Channel, error)
@@ -11,6 +12,7 @@ type ChannelService interface {
 
 //go:generate mockery --dir . --name MessageService --output ./mocks
 type MessageService interface {
+	CreateMessage(message *model.MessageDTO) (int, error)
 	GetMessagesCount() (int, error)
 	GetMessagesCountByChannelID(ID int) (int, error)
 	GetFullMessageByID(ID int) (*model.FullMessage, error)
@@ -21,11 +23,14 @@ type MessageService interface {
 
 //go:generate mockery --dir . --name ReplieService --output ./mocks
 type ReplieService interface {
+	CreateReplie(replie *model.ReplieDTO) error
 	GetFullRepliesByMessageID(ID int) ([]model.FullReplie, error)
 }
 
 //go:generate mockery --dir . --name UserService --output ./mocks
 type UserService interface {
+	CreateUser(user *model.UserDTO) (int, error)
+	GetUserByUsername(username string) (*model.User, error)
 	GetUserByID(ID int) (*model.User, error)
 }
 

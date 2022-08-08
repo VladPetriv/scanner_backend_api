@@ -12,6 +12,7 @@ var (
 	ErrMessagesCountNotFound = errors.New("messages count not found")
 	ErrFullMessagesNotFound  = errors.New("full messages not found")
 	ErrFullMessageNotFound   = errors.New("full message not found")
+	ErrMessageNotCreated     = errors.New("message not created")
 )
 
 type MessageRepo struct {
@@ -20,6 +21,24 @@ type MessageRepo struct {
 
 func NewMessageRepo(db *DB) *MessageRepo {
 	return &MessageRepo{db: db}
+}
+
+func (m *MessageRepo) CreateMessage(message *model.MessageDTO) (int, error) {
+	var id int
+
+	row := m.db.QueryRow(
+		"INSERT INTO message(channel_id, user_id, title, message_url, imageurl) VALUES ($1, $2, $3, $4, $5) RETURNING id;",
+		message.ChannelID, message.UserID, message.Title, message.MessageURL, message.ImageURL,
+	)
+	if err := row.Scan(&id); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, ErrMessageNotCreated
+		}
+
+		return 0, fmt.Errorf("failed to create message: %w", err)
+	}
+
+	return id, nil
 }
 
 func (m *MessageRepo) GetMessagesCount() (int, error) {

@@ -29,7 +29,7 @@ func Get(logLevel string) *Logger {
 			panic(err)
 		}
 
-		logFile, err := os.OpenFile("logs/logs.json", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644) // nolint
+		logFile, err := os.OpenFile("logs/logs.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644) // nolint
 		if err != nil {
 			panic(err)
 		}

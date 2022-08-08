@@ -22,6 +22,18 @@ func NewChannelRepo(db *DB) *ChannelRepo {
 	return &ChannelRepo{db: db}
 }
 
+func (c *ChannelRepo) CreateChannel(channel *model.ChannelDTO) error {
+	_, err := c.db.Exec(
+		"INSERT INTO channel(name, title, imageurl) VALUES ($1, $2, $3);",
+		channel.Name, channel.Title, channel.ImageURL,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to create channel: %w", err)
+	}
+
+	return nil
+}
+
 func (c *ChannelRepo) GetChannelsCount() (int, error) {
 	var count int
 

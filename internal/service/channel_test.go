@@ -11,6 +11,54 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func Test_CreateChannel(t *testing.T) {
+	channelInput := &model.ChannelDTO{Name: "test", Title: "test T", ImageURL: "test.jpg"}
+
+	tests := []struct {
+		name           string
+		mock           func(channelRepo *mocks.ChannelRepo)
+		input          *model.ChannelDTO
+		wantErr        bool
+		expectedErrMsg string
+	}{
+		{
+			name: "Ok: [channel created]",
+			mock: func(channelRepo *mocks.ChannelRepo) {
+				channelRepo.On("CreateChannel", channelInput).Return(nil)
+			},
+			input: channelInput,
+		},
+		{
+			name: "Error: [some store error]",
+			mock: func(channelRepo *mocks.ChannelRepo) {
+				channelRepo.On("CreateChannel", channelInput).Return(fmt.Errorf("failed to create channel: some error"))
+			},
+			input:          channelInput,
+			wantErr:        true,
+			expectedErrMsg: "[Channel] srv.CreateChannel error: failed to create channel: some error",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			channelRepo := &mocks.ChannelRepo{}
+			srv := service.NewChannelService(&store.Store{Channel: channelRepo})
+
+			tt.mock(channelRepo)
+
+			err := srv.CreateChannel(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+				assert.EqualValues(t, tt.expectedErrMsg, err.Error())
+			} else {
+				assert.NoError(t, err)
+			}
+
+			channelRepo.AssertExpectations(t)
+		})
+	}
+}
+
 func Test_GetChannelsCount(t *testing.T) {
 	tests := []struct {
 		name           string

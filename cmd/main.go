@@ -7,6 +7,7 @@ import (
 	"github.com/VladPetriv/scanner_backend_api/internal/server"
 	"github.com/VladPetriv/scanner_backend_api/internal/service"
 	"github.com/VladPetriv/scanner_backend_api/internal/store"
+	"github.com/VladPetriv/scanner_backend_api/internal/store/kafka"
 	"github.com/VladPetriv/scanner_backend_api/pkg/config"
 	"github.com/VladPetriv/scanner_backend_api/pkg/logger"
 )
@@ -40,9 +41,12 @@ func main() {
 		log.Error("failed to create service", zap.Error(err))
 	}
 
-	handler := handler.New(service, log)
+	go kafka.GetChannelFromQueue(service, cfg, log)
+	go kafka.GetDataFromQueue(service, cfg, log)
 
 	server := new(server.Server)
+
+	handler := handler.New(service, log)
 
 	log.Info("start server", zap.String("PORT", cfg.Port))
 

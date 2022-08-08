@@ -13,6 +13,7 @@ type Config struct {
 	LogLevel         string
 	Port             string
 	JwtSecretKey     string
+	KafkaAddr        string
 }
 
 func Get() (*Config, error) {
@@ -26,5 +27,6 @@ func Get() (*Config, error) {
 		LogLevel:         os.Getenv("LOG_LEVEL"),
 		Port:             os.Getenv("PORT"),
 		JwtSecretKey:     os.Getenv("JWT_SECRET_KEY"),
+		KafkaAddr:        os.Getenv("KAFKA_ADDR"),
 	}, nil
 }
