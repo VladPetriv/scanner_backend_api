@@ -1,91 +1,56 @@
-
 # scanner_backend_api
 
-scanner_backend_api is a backend side represented as REST-API for processing data from tg_scanner application.
+## Description
 
-## Tech Stack
+scanner_backend_api is a backend side of tg_scanner application
 
-**Server:** 
-- Gorilla-Mux
-- JWT
-- Apache Kafka
+Application will always create a dir:
 
-**DB:**
-- PostgreSQL
-- Golang-Migrate
+- logs - for log's file
 
-**Testing:**
-- Testify
-- Go-Sqlmock
+## Technology
 
-**Docs:**
-- Swagger
+Go, PostgreSQL, Gorilla-Mux, Zap, Go-Sqlmock, Testify, Golang-Migrate, JWT, Swagger
 
-
-## Features
-
-- Microservice communication with Apache Kafka
-- JWT authentication
-- Unit test for all application layers [handler -> service -> repository]
-- Generated swagger documentation
-
-
-## Environment Variables
-
-To run this project, you will need to add the following environment variables to your ".config.env" file which locate in "config" folder:
-
-- `DATABASE_URL` - PostgreSQL url
-- `LOG_LEVEL` - Level which logger will process
-- `MIGRATIONS_PATH` - Path to migrations: "file://./db/migrations/"
-- `PORT` - Bind address which server will use
-- `JWT_SECRET_KEY` - Secret key for Json Web Token
-- `KAFKA_ADDR` - Apache Kafka address
-
-## Run Locally
-
-Clone the project
+## Installation
 
 ```bash
-  git clone git@github.com:VladPetriv/scanner_backend_api.git
+ git clone git@github.com:VladPetriv/scanner_backend_api.git
+
+ cd scanner_backend_api
+
+ go mod download
+
 ```
 
-Go to the project directory
+## Before start
+
+Please create .env file with this fields:
+
+- DATABASE_URL = PostgreSQL user
+- LOG_LEVEL = Level which logger will handle
+- MIGRATIONS_PATH = Path to migrations:"file://./db/migrations"
+- PORT = Bind address which server going to use
+- JWT_SECRET_KEY = Secret key for json web token
+
+## Usage
+
+Start with docker-compose:
 
 ```bash
-  cd scanner_backend_api
+ make docker
 ```
 
-Install dependencies
+Start an application locally:
 
 ```bash
-  go mod download
+ make run # Or you can use go run ./cmd/main.go
 ```
 
-Start the application:
+Running test suite:
 
 ```bash
-  # Make sure that Apache Kafka and PostgreSQL are running
-  make run # Or you can use "go run ./cmd/main.go"
+ make mock # Run it if mocks folder is not exist
+
+ make test
 ```
-
-Start the application with docker-compose:
-
-```bash
-  make docker
-```
-## Running Tests
-
-To run tests, run the following command:
-
-```bash
-  # Run it only if "mocks" folder not exist or if you updated "service.go" or "repository.go" files
-  make mock 
-```
-
-```bash
-  make test 
-```
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
