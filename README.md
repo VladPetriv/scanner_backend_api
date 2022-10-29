@@ -4,9 +4,9 @@
 
 scanner_backend_api is a backend side of tg_scanner application
 
-Application will always create a dir:
+## Documentation
 
-- logs - for log's file
+Swagger docs included and hosted on github pages
 
 ## Technology
 
@@ -29,7 +29,7 @@ Please create .env file with this fields:
 
 - DATABASE_URL = PostgreSQL user
 - LOG_LEVEL = Level which logger will handle
-- MIGRATIONS_PATH = Path to migrations:"file://./db/migrations"
+- MIGRATIONS_PATH = Path to migrations:`file://./db/migrations`
 - PORT = Bind address which server going to use
 - JWT_SECRET_KEY = Secret key for json web token
 
@@ -44,7 +44,7 @@ Start with docker-compose:
 Start an application locally:
 
 ```bash
- make run # Or you can use go run ./cmd/main.go
+ make run 
 ```
 
 Running test suite:
