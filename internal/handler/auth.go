@@ -10,7 +10,6 @@ import (
 
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 	"github.com/VladPetriv/scanner_backend_api/internal/store/pg"
-	"github.com/VladPetriv/scanner_backend_api/pkg/utils"
 )
 
 // SignUpHandler godoc
@@ -107,7 +106,7 @@ func (h *Handler) SignInHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	ok := utils.ComparePassword(user.Password, candidate.Password)
+	ok := h.service.WebUser.ComparePassword(user.Password, candidate.Password)
 	if !ok {
 		h.WriteError(w, http.StatusUnauthorized, "password is incorrect")
 

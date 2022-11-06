@@ -38,6 +38,8 @@ type UserService interface {
 type WebUserService interface {
 	GetWebUserByEmail(email string) (*model.WebUser, error)
 	CreateWebUser(user *model.WebUser) error
+	HashPassword(password string) (string, error)
+	ComparePassword(password, HashPassword string) bool
 }
 
 //go:generate mockery --dir . --name SavedService --output ./mocks

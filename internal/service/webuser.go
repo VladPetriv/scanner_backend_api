@@ -5,7 +5,7 @@ import (
 
 	"github.com/VladPetriv/scanner_backend_api/internal/model"
 	"github.com/VladPetriv/scanner_backend_api/internal/store"
-	"github.com/VladPetriv/scanner_backend_api/pkg/utils"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type WebUserDBService struct {
@@ -26,7 +26,7 @@ func (w *WebUserDBService) GetWebUserByEmail(email string) (*model.WebUser, erro
 }
 
 func (w *WebUserDBService) CreateWebUser(user *model.WebUser) error {
-	user.Password, _ = utils.HashPassword(user.Password)
+	user.Password, _ = w.HashPassword(user.Password)
 
 	_, err := w.store.WebUser.CreateWebUser(user)
 	if err != nil {
@@ -34,4 +34,19 @@ func (w *WebUserDBService) CreateWebUser(user *model.WebUser) error {
 	}
 
 	return nil
+}
+
+func (w *WebUserDBService) HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
+		return "", fmt.Errorf("failed to hash password: %w", err)
+	}
+
+	return string(bytes), nil
+}
+
+func (w *WebUserDBService) ComparePassword(password, hashedPassword string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+
+	return err == nil
 }
