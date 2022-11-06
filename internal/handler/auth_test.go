@@ -144,6 +144,7 @@ func Test_SignInHandler(t *testing.T) {
 			name: "Ok: [user is authenticated]",
 			mock: func(userSrv *mocks.WebUserService, jwtSrv *mocks.JwtService) {
 				userSrv.On("GetWebUserByEmail", "test@test.com").Return(&testWebUser, nil)
+				userSrv.On("ComparePassword", "test", "$2a$14$2nCtguumOv8npwnzjIn6H.refVOG9Fc9AJxUH9Kkkcxtxabhuop2O").Return(true)
 				jwtSrv.On("GenerateToken", "test@test.com").Return("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0IjoxNTE2MjM5MDIyfQ.j7o5o8GBkybaYXdFJIi8O6mPF50E-gJWZ3reLfMQD68", nil)
 			},
 			inputBody:      `{"email":"test@test.com", "password":"test"}`,
@@ -151,7 +152,7 @@ func Test_SignInHandler(t *testing.T) {
 			expectedCode:   http.StatusOK,
 		},
 		{
-			name: "Error: [uesr not found]",
+			name: "Error: [user not found]",
 			mock: func(userSrv *mocks.WebUserService, jwtSrv *mocks.JwtService) {
 				userSrv.On("GetWebUserByEmail", "test@test.com").Return(nil, fmt.Errorf("[WebUser] srv.GetWebUserByEmail error: %w", pg.ErrWebUserNotFound))
 			},
@@ -174,8 +175,9 @@ func Test_SignInHandler(t *testing.T) {
 			name: "Error: [password is incorrect]",
 			mock: func(userSrv *mocks.WebUserService, jwtSrv *mocks.JwtService) {
 				userSrv.On("GetWebUserByEmail", "test@test.com").Return(&testWebUser, nil)
+				userSrv.On("ComparePassword", "test", "$2a$14$2nCtguumOv8npwnzjIn6H.refVOG9Fc9AJxUH9Kkkcxtxabhuop2O").Return(false)
 			},
-			inputBody:    `{"email":"test@test.com", "password":"testx"}`,
+			inputBody:    `{"email":"test@test.com", "password":"test"}`,
 			wantErr:      true,
 			expectedErr:  lib.HttpError{Code: 401, Name: "Unauthorized", Message: "password is incorrect"},
 			expectedCode: http.StatusUnauthorized,
@@ -184,6 +186,7 @@ func Test_SignInHandler(t *testing.T) {
 			name: "Error: [some internal error with jwt method]",
 			mock: func(userSrv *mocks.WebUserService, jwtSrv *mocks.JwtService) {
 				userSrv.On("GetWebUserByEmail", "test@test.com").Return(&testWebUser, nil)
+				userSrv.On("ComparePassword", "test", "$2a$14$2nCtguumOv8npwnzjIn6H.refVOG9Fc9AJxUH9Kkkcxtxabhuop2O").Return(true)
 				jwtSrv.On("GenerateToken", "test@test.com").Return("", fmt.Errorf("some error"))
 			},
 			inputBody:    `{"email":"test@test.com", "password":"test"}`,
