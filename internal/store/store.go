@@ -67,7 +67,7 @@ func (s *Store) keepAliveDB(cfg *config.Config) {
 		lostConnection := false
 		if s.db == nil {
 			lostConnection = true
-		} else if _, err := s.db.Exec("SELECT 1;"); err != nil {
+		} else if _, err = s.db.Exec("SELECT 1;"); err != nil {
 			lostConnection = true
 		}
 
